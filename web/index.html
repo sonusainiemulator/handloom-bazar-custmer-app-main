@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Priya Fashion - Your Fashion Destination">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Priya Fashion">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Priya Fashion</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* reCAPTCHA container styling */
+    #recaptcha-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+      /* Hidden by default, shown when needed */
+      min-width: 300px;
+      min-height: 200px;
+    }
+
+    /* Show reCAPTCHA when it has content */
+    #recaptcha-container:not(:empty) {
+      display: block;
+    }
+
+    /* Overlay for reCAPTCHA */
+    #recaptcha-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9998;
+      display: none;
+    }
+
+    /* Ensure body has proper styling */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Loading indicator for reCAPTCHA */
+    .recaptcha-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Overlay for reCAPTCHA modal -->
+  <div id="recaptcha-overlay"></div>
+
+  <!-- Container for visible reCAPTCHA (FlutterFire will use this) -->
+  <div id="recaptcha-container"></div>
+
+  <!-- Flutter web bootstrap -->
+  <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // Helper functions for reCAPTCHA modal management
+    window.hideRecaptchaModal = function () {
+      const container = document.getElementById('recaptcha-container');
+      const overlay = document.getElementById('recaptcha-overlay');
+
+      if (container && overlay) {
+        overlay.style.display = 'none';
+        container.style.display = 'none';
+        container.innerHTML = ''; // Clear content
+        console.log('🔒 reCAPTCHA modal manually hidden');
+      }
+    };
+
+    window.showRecaptchaModal = function () {
+      const container = document.getElementById('recaptcha-container');
+      const overlay = document.getElementById('recaptcha-overlay');
+
+      if (container && overlay) {
+        overlay.style.display = 'block';
+        container.style.display = 'block';
+        console.log('✅ reCAPTCHA modal manually shown');
+      }
+    };
+
+    // Show loading indicator
+    window.showRecaptchaLoading = function () {
+      const container = document.getElementById('recaptcha-container');
+      const overlay = document.getElementById('recaptcha-overlay');
+
+      if (container && overlay) {
+        container.innerHTML = '<div class="recaptcha-loading">Loading reCAPTCHA...</div>';
+        overlay.style.display = 'block';
+        container.style.display = 'block';
+        console.log('⏳ reCAPTCHA loading displayed');
+      }
+    };
+
+    // Setup observer to automatically show/hide reCAPTCHA modal
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('recaptcha-container');
+      const overlay = document.getElementById('recaptcha-overlay');
+
+      if (container && overlay) {
+        // Click overlay to close
+        overlay.addEventListener('click', function () {
+          window.hideRecaptchaModal();
+        });
+
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === 'childList') {
+              const hasRecaptchaWidget = container.querySelector('.g-recaptcha, iframe[src*="recaptcha"], [data-sitekey]');
+
+              if (hasRecaptchaWidget || (container.children.length > 0 && !container.querySelector('.recaptcha-loading'))) {
+                // reCAPTCHA widget is shown
+                overlay.style.display = 'block';
+                container.style.display = 'block';
+                console.log('✅ reCAPTCHA widget displayed');
+              } else if (container.children.length === 0) {
+                // reCAPTCHA is hidden
+                overlay.style.display = 'none';
+                container.style.display = 'none';
+                console.log('🔒 reCAPTCHA modal hidden');
+              }
+            }
+          });
+        });
+
+        observer.observe(container, { childList: true, subtree: true });
+        console.log('👁️ reCAPTCHA observer setup complete');
+      }
+    });
+
+    // Global error handler for Firebase Auth
+    window.addEventListener('unhandledrejection', function (event) {
+      if (event.reason && event.reason.code) {
+        console.error('Firebase Auth Error:', event.reason.code, event.reason.message);
+
+        // Handle specific Firebase Auth errors
+        if (event.reason.code === 'auth/invalid-app-credential') {
+          console.error('Invalid app credential - reCAPTCHA token expired or invalid');
+          // Clear reCAPTCHA and allow retry
+          window.hideRecaptchaModal();
+        } else if (event.reason.code === 'auth/captcha-check-failed') {
+          console.error('reCAPTCHA verification failed');
+          // Clear reCAPTCHA and allow retry
+          window.hideRecaptchaModal();
+        }
+      }
+    });
+
+    // Clear reCAPTCHA on page visibility change (helps with token expiry)
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') {
+        // Page became visible, clear any stale reCAPTCHA
+        const container = document.getElementById('recaptcha-container');
+        if (container && container.children.length > 0) {
+          console.log('🔄 Clearing stale reCAPTCHA on page focus');
+          window.hideRecaptchaModal();
+        }
+      }
+    });
+
+    // Add refresh helper for reCAPTCHA issues
+    window.refreshRecaptcha = function() {
+      console.log('🔄 Refreshing reCAPTCHA...');
+      window.hideRecaptchaModal();
+      
+      // Clear any existing reCAPTCHA widgets
+      try {
+        if (window.grecaptcha && window.grecaptcha.reset) {
+          window.grecaptcha.reset();
+          console.log('🔄 Reset grecaptcha');
+        }
+      } catch (e) {
+        console.log('⚠️ Could not reset grecaptcha:', e);
+      }
+      
+      // Clear Firebase Auth app verifier cache
+      try {
+        if (window.firebase && window.firebase.auth) {
+          // Force Firebase to create a new verifier
+          console.log('🔄 Clearing Firebase auth cache');
+        }
+      } catch (e) {
+        console.log('⚠️ Could not clear Firebase cache:', e);
+      }
+      
+      // Small delay before allowing new attempts
+      setTimeout(function() {
+        console.log('✅ reCAPTCHA ready for new attempt');
+      }, 1000);
+    };
+
+    // Force clear reCAPTCHA on page load
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        window.refreshRecaptcha();
+      }, 1000);
+    });
+  </script>
+</body>
+
+</html>

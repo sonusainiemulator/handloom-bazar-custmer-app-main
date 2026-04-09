@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "698681074728",
+    "project_id": "handloom-bazar",
+    "storage_bucket": "handloom-bazar.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698681074728:android:65790dafdea045394e411d",
+        "android_client_info": {
+          "package_name": "com.handloombazar.shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqCwbSHuScPA2oqi1ZqTOM63gLeivS80s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
