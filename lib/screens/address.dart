@@ -12,7 +12,7 @@ import 'package:active_ecommerce_cms_demo_app/repositories/address_repository.da
 import 'package:active_ecommerce_cms_demo_app/screens/map_location.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class Address extends StatefulWidget {

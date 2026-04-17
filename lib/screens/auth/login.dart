@@ -24,7 +24,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -199,7 +199,7 @@ class _LoginState extends State<Login> {
             }
           });
         } catch (e) {
-          print('⚠️ Firebase Messaging error (login): $e');
+          print('[WARN] Firebase Messaging error (login): $e');
         }
 
         await _navigateAfterLogin(Index(), clearStack: true);
@@ -212,7 +212,7 @@ class _LoginState extends State<Login> {
       if (e.toString().contains('Firebase') || 
           e.toString().contains('core/no-app') ||
           e.toString().contains('initializeApp')) {
-        print('⚠️ Firebase error suppressed: $e');
+        print('[WARN] Firebase error suppressed: $e');
         return;
       }
       
@@ -569,7 +569,7 @@ class _LoginState extends State<Login> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "• • • • • • • •",
+                          hint_text: "* * * * * * * *",
                         ),
                       ),
                     ),

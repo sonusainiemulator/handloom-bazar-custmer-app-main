@@ -1,7 +1,7 @@
 import 'package:active_ecommerce_cms_demo_app/data_model/product_mini_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 
 import '../../custom/lang_text.dart';
 import '../../custom/my_separator.dart';

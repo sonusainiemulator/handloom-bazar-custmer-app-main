@@ -1,7 +1,7 @@
 import 'package:active_ecommerce_cms_demo_app/repositories/auction_products_repository.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/checkout/cart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 
 import '../../custom/my_widget.dart';
 import '../../custom/toast_component.dart';

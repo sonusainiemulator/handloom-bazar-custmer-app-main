@@ -29,7 +29,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/payment_method_screen/sslc
 import 'package:active_ecommerce_cms_demo_app/screens/payment_method_screen/stripe_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:one_context/one_context.dart';
 
 import '../../custom/loading.dart';
@@ -408,25 +408,25 @@ handlePaymentMethodNavigation(String paymentMethod) {
 
 
 pay_by_wallet() async {
-  print("🔵 Initiating Wallet Payment...");
-  print("➡️ Selected Payment Method: $_selected_payment_method_key");
-  print("➡️ Grand Total: $_grandTotalValue");
+  print("[WALLET] Initiating Wallet Payment...");
+  print("[STEP] Selected Payment Method: $_selected_payment_method_key");
+  print("[STEP] Grand Total: $_grandTotalValue");
 
   var orderCreateResponse = await PaymentRepository()
       .getOrderCreateResponseFromWallet(
           _selected_payment_method_key, _grandTotalValue);
 
-  print("📩 Wallet Payment API Response: $orderCreateResponse");
+  print("[API] Wallet Payment API Response: $orderCreateResponse");
 
   if (orderCreateResponse.result == false) {
-    print("❌ Wallet Payment Failed: ${orderCreateResponse.message}");
+    print("[ERROR] Wallet Payment Failed: ${orderCreateResponse.message}");
     ToastComponent.showDialog(
       orderCreateResponse.message,
     );
     return;
   }
 
-  print("✅ Wallet Payment Successful! Navigating to Order List...");
+  print("[OK] Wallet Payment Successful! Navigating to Order List...");
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return OrderList(from_checkout: true);
   }));

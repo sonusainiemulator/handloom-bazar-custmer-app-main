@@ -10,7 +10,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/auction/auction_products_d
 import 'package:active_ecommerce_cms_demo_app/screens/product/digital_product_details.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class DigitalProducts extends StatefulWidget {

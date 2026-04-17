@@ -1,5 +1,5 @@
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:active_ecommerce_cms_demo_app/app_config.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/device_info.dart';
@@ -23,7 +23,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:validators/validators.dart';
 
@@ -243,7 +243,7 @@ class _RegistrationState extends State<Registration> {
             }
           }
         } catch (e) {
-          print("⚠️ Firebase Messaging error (registration): $e");
+          print("[WARN] Firebase Messaging error (registration): $e");
           // Non-critical error, continue to home
         }
 
@@ -261,7 +261,7 @@ class _RegistrationState extends State<Registration> {
       if (e.toString().contains('Firebase') || 
           e.toString().contains('core/no-app') ||
           e.toString().contains('initializeApp')) {
-        print('⚠️ Firebase error suppressed: $e');
+        print('[WARN] Firebase error suppressed: $e');
         
         // If we got this far, the user is likely already signed up but push notification failed
         // Check if we should still redirect to main
@@ -539,7 +539,7 @@ class _RegistrationState extends State<Registration> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "• • • • • • • •",
+                          hint_text: "* * * * * * * *",
                         ),
                       ),
                     ),
@@ -576,7 +576,7 @@ class _RegistrationState extends State<Registration> {
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: InputDecorations.buildInputDecoration_1(
-                      hint_text: "• • • • • • • •",
+                      hint_text: "* * * * * * * *",
                     ),
                   ),
                 ),

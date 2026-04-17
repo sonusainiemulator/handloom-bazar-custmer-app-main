@@ -13,7 +13,7 @@ import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/repositories/profile_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -427,7 +427,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                   enableSuggestions: false,
                   autocorrect: false,
                   decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "• • • • • • • •")
+                          hint_text: "* * * * * * * *")
                       .copyWith(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -484,7 +484,7 @@ class _ProfileEditState extends State<ProfileEdit> {
               enableSuggestions: false,
               autocorrect: false,
               decoration: InputDecorations.buildInputDecoration_1(
-                      hint_text: "• • • • • • • •")
+                      hint_text: "* * * * * * * *")
                   .copyWith(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide.none,

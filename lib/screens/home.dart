@@ -12,7 +12,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/top_sellers.dart';
 import 'package:active_ecommerce_cms_demo_app/single_banner/sincle_banner_page.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 
 import 'package:active_ecommerce_cms_demo_app/widgets/google_reviews_section.dart';
 import 'package:active_ecommerce_cms_demo_app/widgets/sale_section_two_rows.dart';

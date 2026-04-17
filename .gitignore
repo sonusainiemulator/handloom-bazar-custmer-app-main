@@ -46,3 +46,12 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Android signing — never commit credentials or keystores
+android/key.properties
+android/local.properties
+*.jks
+*.keystore
+
+# Build analysis output
+analysis_output.txt

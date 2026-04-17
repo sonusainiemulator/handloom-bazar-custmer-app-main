@@ -9,7 +9,7 @@ import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:one_context/one_context.dart';
@@ -67,7 +67,7 @@ void main() async {
   bool firebaseInitialized = false;
   for (int attempt = 1; attempt <= 3 && !firebaseInitialized; attempt++) {
     try {
-      print('🔄 Firebase initialization attempt $attempt...');
+      print('[INFO] Firebase initialization attempt $attempt...');
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
@@ -78,20 +78,20 @@ void main() async {
       // Verify Firebase is ready
       Firebase.app();
       firebaseInitialized = true;
-      print('✅ Firebase initialized successfully on attempt $attempt');
+      print('[OK] Firebase initialized successfully on attempt $attempt');
     } catch (e) {
-      print('❌ Firebase initialization attempt $attempt failed: $e');
+      print('[ERROR] Firebase initialization attempt $attempt failed: $e');
       
       // Fallback: Try initializing without options (uses google-services.json)
       if (!kIsWeb) {
         try {
-          print('🔄 Attempting fallback initialization (native config)...');
+          print('[INFO] Attempting fallback initialization (native config)...');
           await Firebase.initializeApp();
           firebaseInitialized = true;
-          print('✅ Firebase initialized successfully with native config');
+          print('[OK] Firebase initialized successfully with native config');
           break;
         } catch (e2) {
-          print('❌ Fallback initialization failed: $e2');
+          print('[ERROR] Fallback initialization failed: $e2');
         }
       }
 
@@ -102,8 +102,8 @@ void main() async {
   }
   
   if (!firebaseInitialized) {
-    print('⚠️ Firebase failed to initialize after 3 attempts');
-    print('⚠️ App will continue but Firebase features may not work properly');
+    print('[WARN] Firebase failed to initialize after 3 attempts');
+    print('[WARN] App will continue but Firebase features may not work properly');
   }
   
   if (!kIsWeb) {
@@ -113,7 +113,7 @@ void main() async {
         ignoreSsl: true,
       );
     } catch (e) {
-      print('⚠️ FlutterDownloader initialization error: $e');
+      print('[WARN] FlutterDownloader initialization error: $e');
     }
   }
   
@@ -342,13 +342,13 @@ class _MyAppState extends State<MyApp> {
           Firebase.app();
           await Future.delayed(Duration(milliseconds: 1000)); // Longer delay
           await PushNotificationService().initialise();
-          print('✅ Push notifications initialized');
+          print('[OK] Push notifications initialized');
         } catch (e) {
-          print('⚠️ Firebase not ready for push notifications: $e');
+          print('[WARN] Firebase not ready for push notifications: $e');
         }
       }
     } catch (e) {
-      print('❌ Push notification initialization error: $e');
+      print('[ERROR] Push notification initialization error: $e');
     }
   }
 

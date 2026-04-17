@@ -4,7 +4,7 @@
 // import 'package:active_ecommerce_cms_demo_app/presenter/cart_counter.dart';
 // import 'package:active_ecommerce_cms_demo_app/repositories/cart_repository.dart';
 // import 'package:flutter/material.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:provider/provider.dart';
 
@@ -255,7 +255,7 @@ import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
 import 'package:active_ecommerce_cms_demo_app/presenter/cart_counter.dart';
 import 'package:active_ecommerce_cms_demo_app/repositories/cart_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -295,29 +295,29 @@ class CartProvider extends ChangeNotifier {
 
   Future<void> fetchData(BuildContext context) async {
     try {
-      print('🛒 Fetching cart data...');
+      print('[CART] Fetching cart data...');
       getCartCount(context);
       
       CartResponse cartResponseList =
           await CartRepository().getCartResponseList(user_id.$);
 
-      print('🛒 Cart response received');
-      print('🛒 Cart data length: ${cartResponseList.data?.length ?? 0}');
-      print('🛒 Grand total: ${cartResponseList.grandTotal}');
+      print('[CART] Cart response received');
+      print('[CART] Cart data length: ${cartResponseList.data?.length ?? 0}');
+      print('[CART] Grand total: ${cartResponseList.grandTotal}');
 
       if (cartResponseList.data != null && cartResponseList.data!.isNotEmpty) {
         _shopList = cartResponseList.data!;
         _shopResponse = cartResponseList;
-        print('🛒 Cart items loaded: ${_shopList.length} shops');
+        print('[CART] Cart items loaded: ${_shopList.length} shops');
         getSetCartTotal();
       } else {
-        print('🛒 Cart is empty');
+        print('[CART] Cart is empty');
         _shopList = [];
         _shopResponse = cartResponseList;
         _cartTotalString = "${SystemConfig.systemCurrency?.symbol ?? ''}0.00";
       }
     } catch (e) {
-      print('❌ Error fetching cart: $e');
+      print('[ERROR] Error fetching cart: $e');
       _shopList = [];
       _cartTotalString = "${SystemConfig.systemCurrency?.symbol ?? ''}0.00";
       ToastComponent.showDialog('Error loading cart. Please try again.');

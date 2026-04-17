@@ -29,7 +29,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/wholesales_screen.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/wishlist/widgets/page_animation.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:one_context/one_context.dart';
 import 'package:provider/provider.dart';

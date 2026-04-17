@@ -15,7 +15,7 @@ import '../../repositories/brand_repository.dart';
 import '../../repositories/classified_product_repository.dart';
 import '../../repositories/product_repository.dart';
 import '../uploads/upload_file.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 
 class ClassifiedProductAdd extends StatefulWidget {
   const ClassifiedProductAdd({super.key});
@@ -1487,7 +1487,7 @@ class CommonDropDownItemWithChild {
   setLevelText() {
     String tmpTxt = "";
     for (int i = 0; i < level!; i++) {
-      tmpTxt += "–";
+      tmpTxt += "-";
     }
     levelText = "$tmpTxt $levelText";
   }

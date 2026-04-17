@@ -17,7 +17,7 @@ import 'package:active_ecommerce_cms_demo_app/repositories/guest_checkout_reposi
 import 'package:active_ecommerce_cms_demo_app/screens/checkout/shipping_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class GuestCheckoutAddress extends StatefulWidget {
