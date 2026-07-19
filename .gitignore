@@ -61,3 +61,5 @@ analysis_output.txt
 # Android Build Folders
 android/app/build/
 android/build/
+android/.gradle/
+.gradle/
