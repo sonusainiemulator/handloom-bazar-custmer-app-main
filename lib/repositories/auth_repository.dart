@@ -320,6 +320,24 @@ class AuthRepository {
     }
   }
 
+  Future<LoginResponse> loginWithOtp(String phone, String otp) async {
+    var postBody = jsonEncode({
+      "phone": phone,
+      "otp": otp,
+    });
+
+    String url = ("${AppConfig.BASE_URL}/auth/login-with-otp");
+    final response = await ApiRequest.post(
+        url: url,
+        headers: {
+          "Content-Type": "application/json",
+          "App-Language": app_language.$!,
+        },
+        body: postBody);
+
+    return loginResponseFromJson(response.body);
+  }
+
   // Enhanced error handling method
   String getErrorMessage(dynamic error) {
     if (error is Map<String, dynamic>) {

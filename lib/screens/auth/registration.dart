@@ -31,6 +31,7 @@ import '../../custom/loading.dart';
 import '../../helpers/auth_helper.dart';
 import '../../repositories/address_repository.dart';
 import 'otp.dart';
+import 'otp_auth.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -709,6 +710,44 @@ class _RegistrationState extends State<Registration> {
                               onPressSignUp();
                             }
                             : null,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Container(
+                  height: 45,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: MyTheme.accent_color, width: 1),
+                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  child: Btn.minWidthFixHeight(
+                    minWidth: MediaQuery.of(context).size.width,
+                    height: 50,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(6.0),
+                      ),
+                    ),
+                    child: Text(
+                      "Register / Login with OTP",
+                      style: TextStyle(
+                        color: MyTheme.accent_color,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return OtpAuth(initialIsRegister: true);
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

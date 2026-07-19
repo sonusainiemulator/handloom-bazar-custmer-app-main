@@ -1,6 +1,7 @@
-import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.dart';
 import 'package:flutter/material.dart';
+
+import '../helpers/main_helpers.dart';
 
 // ignore: must_be_immutable
 class TopSellingProductsCard extends StatefulWidget {
@@ -58,7 +59,7 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
                       left: Radius.circular(6), right: Radius.zero),
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/placeholder.png',
-                    image: widget.image!,
+                    image: widget.image ?? 'assets/placeholder.png',
                     fit: BoxFit.cover,
                   ))),
           Flexible(
@@ -75,7 +76,7 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
                   Container(
                     //color:Colors.blue,
                     child: Text(
-                      widget.name!,
+                      widget.name ?? '',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: TextStyle(
@@ -93,11 +94,7 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
                       alignment: WrapAlignment.spaceBetween,
                       children: [
                         Text(
-                          SystemConfig.systemCurrency!.code != null
-                              ? widget.main_price!.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : widget.main_price!,
+                          convertPrice(widget.main_price ?? ''),
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           style: TextStyle(
@@ -108,13 +105,9 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
                         SizedBox(
                           width: 18,
                         ),
-                        widget.has_discount!
+                        (widget.has_discount ?? false)
                             ? Text(
-                                SystemConfig.systemCurrency!.code != null
-                                    ? widget.stroked_price!.replaceAll(
-                                        SystemConfig.systemCurrency!.code!,
-                                        SystemConfig.systemCurrency!.symbol!)
-                                    : widget.stroked_price!,
+                            convertPrice(widget.stroked_price ?? ''),
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 style: TextStyle(

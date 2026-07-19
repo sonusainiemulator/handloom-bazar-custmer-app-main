@@ -199,10 +199,11 @@
 //   }
 // }
 
-import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.dart';
 import 'package:flutter/material.dart';
+
+import '../helpers/main_helpers.dart';
 
 class MiniProductCard extends StatefulWidget {
   int? id;
@@ -259,14 +260,14 @@ class _MiniProductCardState extends State<MiniProductCard> {
                           borderRadius: BorderRadius.circular(10),
                           child: FadeInImage.assetNetwork(
                             placeholder: 'assets/placeholder.png',
-                            image: widget.image!,
+                            image: widget.image ?? 'assets/placeholder.png',
                             fit: BoxFit.cover,
                           ))),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(8, 12, 8, 6),
                   child: Text(
-                    widget.name!,
+                    widget.name ?? '',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     style: TextStyle(
@@ -279,11 +280,7 @@ class _MiniProductCardState extends State<MiniProductCard> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
                   child: Text(
-                    SystemConfig.systemCurrency != null
-                        ? widget.main_price!.replaceAll(
-                            SystemConfig.systemCurrency!.code!,
-                            SystemConfig.systemCurrency!.symbol!)
-                        : widget.main_price!,
+                    convertPrice(widget.main_price ?? ''),
                     maxLines: 1,
                     style: TextStyle(
                         color: Color(0xff000000),

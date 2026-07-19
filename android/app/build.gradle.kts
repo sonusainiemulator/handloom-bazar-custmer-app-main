@@ -19,36 +19,42 @@ val hasReleaseKeystore = keystoreProperties.isNotEmpty()
 
 android {
     namespace = "com.handloombazar.shop"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "28.0.13004108"
 
     compileOptions {
-        // Enable core library desugaring and use Java 17 (more stable)
+        // Enable core library desugaring and align with plugin Java target.
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
         applicationId = "com.handloombazar.shop"
         minSdk = flutter.minSdkVersion
-        targetSdk = 35
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
-        manifestPlaceholders["applicationName"] = "android.app.Application"
+        multiDexKeepProguard = file("multidex-config.pro")
+        manifestPlaceholders["applicationName"] = "com.handloombazar.shop.MainApplication"
     }
 
     signingConfigs {
         if (hasReleaseKeystore) {
             create("release") {
+                val configuredStoreFile = File(keystoreProperties["storeFile"] as String)
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
+                storeFile = if (configuredStoreFile.isAbsolute) {
+                    configuredStoreFile
+                } else {
+                    File(rootDir, configuredStoreFile.path)
+                }
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }

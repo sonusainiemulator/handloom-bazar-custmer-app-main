@@ -292,6 +292,7 @@
 import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/text_styles.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/useful_elements.dart';
+import 'package:active_ecommerce_cms_demo_app/helpers/main_helpers.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shimmer_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
@@ -513,10 +514,7 @@ class _CartState extends State<Cart> {
                     ),
                     const Spacer(),
                     Text(
-                      cartProvider.shopList[index].subTotal.replaceAll(
-                              SystemConfig.systemCurrency!.code,
-                              SystemConfig.systemCurrency!.symbol) ??
-                          '',
+                      convertPrice(cartProvider.shopList[index].subTotal),
                       style: const TextStyle(
                           color: MyTheme.accent_color,
                           fontWeight: FontWeight.bold,

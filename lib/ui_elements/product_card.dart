@@ -1,8 +1,8 @@
-import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.dart';
 import 'package:flutter/material.dart';
 
+import '../helpers/main_helpers.dart';
 import '../helpers/shared_value_helper.dart';
 import '../screens/auction/auction_products_details.dart';
 
@@ -136,12 +136,7 @@ class _ProductCardState extends State<ProductCard> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                           child: Text(
-                            SystemConfig.systemCurrency != null
-                                ? widget.stroked_price?.replaceAll(
-                                        SystemConfig.systemCurrency!.code!,
-                                        SystemConfig.systemCurrency!.symbol!) ??
-                                    ''
-                                : widget.stroked_price ?? '',
+                            convertPrice(widget.stroked_price ?? ''),
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -158,12 +153,7 @@ class _ProductCardState extends State<ProductCard> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: Text(
-                          SystemConfig.systemCurrency != null
-                              ? widget.main_price?.replaceAll(
-                                      SystemConfig.systemCurrency!.code!,
-                                      SystemConfig.systemCurrency!.symbol!) ??
-                                  ''
-                              : widget.main_price ?? '',
+                          convertPrice(widget.main_price ?? ''),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,

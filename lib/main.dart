@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:active_ecommerce_cms_demo_app/middlewares/auth_middleware.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/auth/login.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -37,6 +37,7 @@ import 'screens/auction/auction_products.dart';
 import 'screens/auction/auction_products_details.dart';
 import 'screens/auction/auction_purchase_history.dart';
 import 'screens/auth/registration.dart';
+import 'screens/auth/otp_auth.dart';
 import 'screens/brand_products.dart';
 import 'screens/category_list_n_product/category_list.dart';
 import 'screens/category_list_n_product/category_products.dart';
@@ -61,74 +62,82 @@ import 'services/push_notification_service.dart';
 import 'single_banner/photo_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase with error handling and retry
-  bool firebaseInitialized = false;
-  for (int attempt = 1; attempt <= 3 && !firebaseInitialized; attempt++) {
-    try {
-      print('[INFO] Firebase initialization attempt $attempt...');
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
+  await runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      Zone.current.handleUncaughtError(
+        details.exception,
+        details.stack ?? StackTrace.current,
       );
-      
-      // Wait longer for Firebase to be fully ready
-      await Future.delayed(Duration(milliseconds: 1000));
-      
-      // Verify Firebase is ready
-      Firebase.app();
-      firebaseInitialized = true;
-      print('[OK] Firebase initialized successfully on attempt $attempt');
-    } catch (e) {
-      print('[ERROR] Firebase initialization attempt $attempt failed: $e');
-      
-      // Fallback: Try initializing without options (uses google-services.json)
-      if (!kIsWeb) {
-        try {
-          print('[INFO] Attempting fallback initialization (native config)...');
-          await Firebase.initializeApp();
-          firebaseInitialized = true;
-          print('[OK] Firebase initialized successfully with native config');
-          break;
-        } catch (e2) {
-          print('[ERROR] Fallback initialization failed: $e2');
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      print('[FATAL] Uncaught platform error: $error');
+      print(stack);
+      return true;
+    };
+
+    // Initialize Firebase with error handling and retry
+    bool firebaseInitialized = false;
+    for (int attempt = 1; attempt <= 3 && !firebaseInitialized; attempt++) {
+      try {
+        print('[INFO] Firebase initialization attempt $attempt...');
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+
+        // Wait longer for Firebase to be fully ready
+        await Future.delayed(Duration(milliseconds: 1000));
+
+        // Verify Firebase is ready
+        Firebase.app();
+        firebaseInitialized = true;
+        print('[OK] Firebase initialized successfully on attempt $attempt');
+      } catch (e) {
+        print('[ERROR] Firebase initialization attempt $attempt failed: $e');
+
+        // Fallback: Try initializing without options (uses google-services.json)
+        if (!kIsWeb) {
+          try {
+            print('[INFO] Attempting fallback initialization (native config)...');
+            await Firebase.initializeApp();
+            firebaseInitialized = true;
+            print('[OK] Firebase initialized successfully with native config');
+            break;
+          } catch (e2) {
+            print('[ERROR] Fallback initialization failed: $e2');
+          }
+        }
+
+        if (attempt < 3) {
+          await Future.delayed(Duration(milliseconds: 500));
         }
       }
-
-      if (attempt < 3) {
-        await Future.delayed(Duration(milliseconds: 500));
-      }
     }
-  }
-  
-  if (!firebaseInitialized) {
-    print('[WARN] Firebase failed to initialize after 3 attempts');
-    print('[WARN] App will continue but Firebase features may not work properly');
-  }
-  
-  if (!kIsWeb) {
-    try {
-      await FlutterDownloader.initialize(
-        debug: true,
-        ignoreSsl: true,
-      );
-    } catch (e) {
-      print('[WARN] FlutterDownloader initialization error: $e');
-    }
-  }
-  
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ),
-  );
 
-  runApp(SharedValue.wrapApp(MyApp()));
+    if (!firebaseInitialized) {
+      print('[WARN] Firebase failed to initialize after 3 attempts');
+      print('[WARN] App will continue but Firebase features may not work properly');
+    }
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
+
+    runApp(SharedValue.wrapApp(MyApp()));
+  }, (error, stack) {
+    print('[FATAL] Uncaught zone error: $error');
+    print(stack);
+  });
 }
 
 var routes = GoRouter(
@@ -193,6 +202,14 @@ var routes = GoRouter(
           pageBuilder:
               (BuildContext context, GoRouterState state) =>
                   MaterialPage(child: Registration()),
+        ),
+        GoRoute(
+          path: "users/otp-auth",
+          pageBuilder:
+              (BuildContext context, GoRouterState state) {
+                final isRegister = state.uri.queryParameters['isRegister'] == 'true';
+                return MaterialPage(child: OtpAuth(initialIsRegister: isRegister));
+              },
         ),
         GoRoute(
           path: "dashboard",

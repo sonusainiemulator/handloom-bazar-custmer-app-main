@@ -145,11 +145,11 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails>
   fetchAuctionProductDetails() async {
     var auctionproductDetailsResponse = await AuctionProductsRepository()
         .getAuctionProductsDetails(widget.slug);
+    final auctionProducts = auctionproductDetailsResponse.auctionProduct;
 
-    if (auctionproductDetailsResponse.auctionProduct!.isNotEmpty) {
-      _auctionproductDetails = auctionproductDetailsResponse.auctionProduct![0];
-      sellerChatTitleController.text =
-          auctionproductDetailsResponse.auctionProduct![0].name!;
+    if (auctionProducts != null && auctionProducts.isNotEmpty) {
+      _auctionproductDetails = auctionProducts[0];
+      sellerChatTitleController.text = auctionProducts[0].name ?? '';
     }
 
     setProductDetailValues();

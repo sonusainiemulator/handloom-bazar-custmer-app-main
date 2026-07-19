@@ -1,4 +1,5 @@
-import java.io.File
+import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 allprojects {
     repositories {
@@ -7,21 +8,21 @@ allprojects {
     }
 }
 
-val newBuildDir = System.getenv("LOCALAPPDATA")
-    ?.takeIf { it.isNotBlank() }
-    ?.let { File(it, "HandloomBazarCustomerApp/build") }
-    ?: File(rootDir, "../../build")
-
-newBuildDir.mkdirs()
-rootProject.layout.buildDirectory.set(newBuildDir)
-
-subprojects {
-    project.layout.buildDirectory.set(File(newBuildDir, project.name))
-}
 subprojects {
     project.evaluationDependsOn(":app")
+
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 tasks.register<Delete>("clean") {
-    delete(newBuildDir)
+    delete(rootProject.layout.buildDirectory)
 }

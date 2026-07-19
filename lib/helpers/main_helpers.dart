@@ -30,8 +30,15 @@ Map<String, String> get currencyHeader =>
         : {};
 
 String convertPrice(String amount) {
-  return amount.replaceAll(
-      SystemConfig.systemCurrency!.code!, SystemConfig.systemCurrency!.symbol!);
+  final currency = SystemConfig.systemCurrency;
+  final code = currency?.code;
+  final symbol = currency?.symbol;
+
+  if (amount.isEmpty || code == null || code.isEmpty || symbol == null || symbol.isEmpty) {
+    return amount;
+  }
+
+  return amount.replaceAll(code, symbol);
 }
 
 String getParameter(GoRouterState state, String key) =>

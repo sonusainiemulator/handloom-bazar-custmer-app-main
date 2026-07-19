@@ -15,4 +15,10 @@ class OtherConfig {
       "Priya Fashion, bhalununda Main Road, nearby Laxmi Mandir, Jogender Meher, Bhalumunda, Badamula, Odisha 767040";
   // Default country code for phone numbers (used when user omits +CC)
   static const String defaultPhoneCountryCode = "+91";
+
+  // BulkSMSPlans SMS Gateway Configuration
+  static const String BULK_SMS_PLANS_API_ID = ""; // Enter your BulkSMSPlans API ID
+  static const String BULK_SMS_PLANS_API_PASSWORD = ""; // Enter your BulkSMSPlans API Password
+  static const String BULK_SMS_PLANS_SENDER_ID = "HDTAPP"; // Enter your approved Sender ID (DLT template)
+  static const String BULK_SMS_PLANS_SMS_TYPE = "transactional"; // transactional or promotional
 }

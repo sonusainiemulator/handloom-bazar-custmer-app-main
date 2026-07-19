@@ -2,6 +2,7 @@ import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/enum_classes.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/lang_text.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/toast_component.dart';
+import 'package:active_ecommerce_cms_demo_app/helpers/main_helpers.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shimmer_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
@@ -107,12 +108,7 @@ class _CheckoutState extends State<Checkout> {
     if (widget.paymentFor == PaymentFor.ManualPayment) {
       balance = widget.rechargeAmount.toString();
     }
-    if (SystemConfig.systemCurrency != null) {
-      balance = _totalString?.replaceAll(SystemConfig.systemCurrency!.code!,
-          SystemConfig.systemCurrency!.symbol!);
-    } else {
-      balance = _totalString;
-    }
+    balance = convertPrice(_totalString ?? '');
     if (widget.paymentFor == PaymentFor.OrderRePayment) {
       balance = widget.rechargeAmount.toString();
     }
@@ -512,11 +508,7 @@ pay_by_wallet() async {
                         ),
                         Spacer(),
                         Text(
-                          SystemConfig.systemCurrency != null
-                              ? _subTotalString!.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : _subTotalString!,
+                          convertPrice(_subTotalString ?? ''),
                           style: TextStyle(
                               color: MyTheme.font_grey,
                               fontSize: 14,
@@ -541,11 +533,7 @@ pay_by_wallet() async {
                         ),
                         Spacer(),
                         Text(
-                          SystemConfig.systemCurrency != null
-                              ? _taxString!.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : _taxString!,
+                          convertPrice(_taxString ?? ''),
                           style: TextStyle(
                               color: MyTheme.font_grey,
                               fontSize: 14,
@@ -571,11 +559,7 @@ pay_by_wallet() async {
                         ),
                         Spacer(),
                         Text(
-                          SystemConfig.systemCurrency != null
-                              ? _shippingCostString.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : _shippingCostString,
+                          convertPrice(_shippingCostString),
                           style: TextStyle(
                               color: MyTheme.font_grey,
                               fontSize: 14,
@@ -600,11 +584,7 @@ pay_by_wallet() async {
                         ),
                         Spacer(),
                         Text(
-                          SystemConfig.systemCurrency != null
-                              ? _discountString!.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : _discountString!,
+                          convertPrice(_discountString ?? ''),
                           style: TextStyle(
                               color: MyTheme.font_grey,
                               fontSize: 14,
@@ -631,11 +611,7 @@ pay_by_wallet() async {
                         ),
                         Spacer(),
                         Text(
-                          SystemConfig.systemCurrency != null
-                              ? _totalString!.replaceAll(
-                                  SystemConfig.systemCurrency!.code!,
-                                  SystemConfig.systemCurrency!.symbol!)
-                              : _totalString!,
+                          convertPrice(_totalString ?? ''),
                           style: TextStyle(
                               color: MyTheme.accent_color,
                               fontSize: 14,

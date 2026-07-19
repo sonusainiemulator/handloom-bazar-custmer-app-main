@@ -244,17 +244,20 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     super.initState();
     if (widget.routeName != null &&
         widget.routeName is String &&
-        widget.routeName![0] != "/") {
+        widget.routeName!.isNotEmpty &&
+        !widget.routeName!.startsWith("/")) {
       throw ArgumentError(
           "widget.routeName must be a String beginning with forward slash (/)");
     }
     if (widget.navigateAfterFuture == null) {
-      Timer(Duration(seconds: widget.seconds!), () {
+      Timer(Duration(seconds: widget.seconds ?? 0), () {
+        if (!mounted) return;
+
         if (widget.navigateAfterSeconds is String) {
           // It's fairly safe to assume this is using the in-built material
           // named route component
           Navigator.of(context)
-              .pushReplacementNamed(widget.navigateAfterSeconds);
+              .pushReplacementNamed(widget.navigateAfterSeconds as String);
         } else if (widget.navigateAfterSeconds is Widget) {
           Navigator.of(context).pushReplacement(widget.pageRoute != null
               ? widget.pageRoute!
@@ -271,6 +274,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       });
     } else {
       widget.navigateAfterFuture!.then((navigateTo) {
+        if (!mounted) return;
+
         if (navigateTo is String) {
           // It's fairly safe to assume this is using the in-built material
           // named route component

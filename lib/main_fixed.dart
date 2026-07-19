@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -74,20 +73,6 @@ void main() async {
     } catch (e) {
       print('Firebase initialization error: $e');
       // Continue app execution even if Firebase fails
-    }
-    
-    // Initialize Flutter Downloader with error handling
-    if (!kIsWeb) {
-      try {
-        await FlutterDownloader.initialize(
-          debug: false, // Set to false in production to reduce logs
-          ignoreSsl: true,
-        );
-        print('FlutterDownloader initialized successfully');
-      } catch (e) {
-        print('FlutterDownloader initialization error: $e');
-        // Continue app execution
-      }
     }
     
     // Set preferred orientations

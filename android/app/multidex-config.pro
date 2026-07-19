@@ -1,0 +1,3 @@
+-keep class vn.hunghd.flutterdownloader.** { *; }
+-keep class androidx.startup.** { *; }
+-keep class androidx.work.** { *; }

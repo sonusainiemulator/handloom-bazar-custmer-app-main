@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.4.0+8] — 2026-07-19
+
+### Features & Updates
+- **OTP Authentication**: Implemented passwordless login and registration via custom `OtpAuth` (`lib/screens/auth/otp_auth.dart`), integrating with the `BulkSmsPlansService` (`lib/services/bulk_sms_plans_service.dart`) to send OTPs using bulksmsplans.com gateway. Includes fallback demo mode when API keys are not provided.
+- **OTP Screen Navigation**: Added "Login / Register with OTP" options to both login and registration screens, routing to the new custom verification flow.
+- **Crash Prevention (Zone Guarding)**: Wrapped app initialization in `runZonedGuarded` and registered global error handlers on `FlutterError` and `PlatformDispatcher` to capture unexpected framework/platform crashes gracefully.
+
+### Build & Cleanups
+- **Build Upgrade**: Upgraded application version to `5.4.0+8` in `pubspec.yaml` to bump the Android build version code from 7 to 8.
+- **Cleanup**: Removed unused dependency `flutter_downloader` and its provider/initialization configs from `pubspec.yaml`, `AndroidManifest.xml`, and `lib/main.dart`.
+
 ## [Unreleased] — 2026-04-17
 
 ### Bug Fixes

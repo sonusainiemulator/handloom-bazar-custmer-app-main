@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:active_ecommerce_cms_demo_app/app_config.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/box_decorations.dart';
@@ -27,11 +24,8 @@ import 'package:active_ecommerce_cms_demo_app/screens/refund_request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class OrderDetails extends StatefulWidget {
@@ -64,17 +58,8 @@ class _OrderDetailsState extends State<OrderDetails> {
   final TextEditingController _refundReasonController = TextEditingController();
   bool _showReasonWarning = false;
 
-  @pragma('vm:entry-point')
-  static void downloadCallback(String id, int status, int progress) {
-    final SendPort? send = IsolateNameServer.lookupPortByName(
-      'downloader_send_port',
-    );
-    send?.send([id, status, progress]);
-  }
-
   //init
   int _stepIndex = 0;
-  final ReceivePort _port = ReceivePort();
   DetailedOrder? _orderDetails;
   final List<dynamic> _orderedItemList = [];
   bool _orderItemsInit = false;
@@ -82,20 +67,6 @@ class _OrderDetailsState extends State<OrderDetails> {
   @override
   void initState() {
     fetchAll();
-
-    var k = IsolateNameServer.registerPortWithName(
-      _port.sendPort,
-      'downloader_send_port',
-    );
-
-    _port.listen((dynamic data) {
-      if (data[2] >= 100) {
-        ToastComponent.showDialog("File has downloaded successfully.");
-      }
-      setState(() {});
-    });
-
-    FlutterDownloader.registerCallback(downloadCallback);
 
     super.initState();
 
@@ -108,47 +79,10 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   Future<void> _downloadInvoice(id) async {
-    var folder = await createFolder();
-    try {
-      String? taskid = await FlutterDownloader.enqueue(
-        url: "${AppConfig.BASE_URL}/invoice/download/$id",
-        saveInPublicStorage: true,
-        savedDir: folder,
-        showNotification: true,
-        headers: {
-          "Authorization": "Bearer ${access_token.$}",
-          "Currency-Code": SystemConfig.systemCurrency!.code!,
-          "Currency-Exchange-Rate":
-              SystemConfig.systemCurrency!.exchangeRate.toString(),
-          "App-Language": app_language.$!,
-          "System-Key": AppConfig.system_key,
-        },
-      );
-    } on Exception catch (e) {
-      print("e.toString()");
-      print(e.toString());
-      // TODO
-    }
-  }
-
-  Future<String> createFolder() async {
-    var mPath = "storage/emulated/0/Download/";
-    if (Platform.isIOS) {
-      var iosPath = await getApplicationDocumentsDirectory();
-      mPath = iosPath.path;
-    }
-    // print("path = $mPath");
-    final dir = Directory(mPath);
-
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    if ((await dir.exists())) {
-      return dir.path;
-    } else {
-      await dir.create();
-      return dir.path;
+    final uri = Uri.parse("${AppConfig.BASE_URL}/invoice/download/$id");
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened) {
+      ToastComponent.showDialog("Unable to open invoice download link.");
     }
   }
 
