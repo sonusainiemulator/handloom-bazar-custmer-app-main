@@ -1,7 +1,7 @@
 class OtherConfig {
   static const bool USE_PUSH_NOTIFICATION = true;
   static const bool USE_GOOGLE_MAP = true;
-  static const String GOOGLE_MAP_API_KEY = "";
+  static const String GOOGLE_MAP_API_KEY = "AIzaSyDBd5VKTiDuySvIczPSam5sg6SZF9JhaVQ";
 
   // Google Places (Reviews)
   // NOTE: For security, prefer loading from secure storage or env in production.
@@ -17,8 +17,9 @@ class OtherConfig {
   static const String defaultPhoneCountryCode = "+91";
 
   // BulkSMSPlans SMS Gateway Configuration
-  static const String BULK_SMS_PLANS_API_ID = ""; // Enter your BulkSMSPlans API ID
-  static const String BULK_SMS_PLANS_API_PASSWORD = ""; // Enter your BulkSMSPlans API Password
-  static const String BULK_SMS_PLANS_SENDER_ID = "HDTAPP"; // Enter your approved Sender ID (DLT template)
+  static const String BULK_SMS_PLANS_API_ID = "APIjgQyRulb150902"; // Enter your BulkSMSPlans API ID
+  static const String BULK_SMS_PLANS_API_PASSWORD = "cMizGasR"; // Enter your BulkSMSPlans API Password
+  static const String BULK_SMS_PLANS_SENDER_ID = "HLBZAR"; // Enter your approved Sender ID (DLT template)
   static const String BULK_SMS_PLANS_SMS_TYPE = "transactional"; // transactional or promotional
+  static const String BULK_SMS_PLANS_DLT_TEMPLATE_ID = "193236"; // DLT approved template ID (TRAI India)
 }

@@ -57,7 +57,7 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
  return FadeTransition(
       opacity: _fadeAnimation,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 16.0),
+        margin: const EdgeInsets.only(top: 12.0, bottom: 4.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -299,9 +299,9 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                         final screenWidth = MediaQuery.of(context).size.width;
                         final screenHeight = MediaQuery.of(context).size.height;
                         final cardWidth = screenWidth * 0.85; // 85% of screen width
-                        final cardHeight = screenHeight * 0.4; // 40% of screen height for more compact cards
-                        final minHeight = 320.0; // Reduced minimum height
-                        final maxHeight = 500.0; // Reduced maximum height
+                        final cardHeight = screenHeight * 0.20; // 20% of screen height for tight compact cards
+                        final minHeight = 150.0; // Tight minimum height
+                        final maxHeight = 220.0; // Tight maximum height
                         final finalHeight = cardHeight.clamp(minHeight, maxHeight);
                         
                         return SizedBox(
@@ -334,17 +334,17 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(20),
+                                  padding: const EdgeInsets.all(14),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       // User info and rating - Fixed height section
                                       SizedBox(
-                                        height: 60,
+                                        height: 48,
                                         child: Row(
                                           children: [
                                             CircleAvatar(
-                                              radius: 24,
+                                              radius: 20,
                                               backgroundImage: r.profilePhotoUrl != null
                                                   ? NetworkImage(r.profilePhotoUrl!)
                                                   : null,
@@ -352,12 +352,12 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                               child: r.profilePhotoUrl == null
                                                   ? Icon(
                                                       Icons.person,
-                                                      size: 24,
+                                                      size: 20,
                                                       color: MyTheme.accent_color,
                                                     )
                                                   : null,
                                             ),
-                                            const SizedBox(width: 12),
+                                            const SizedBox(width: 10),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,18 +367,18 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                                     r.authorName,
                                                     style: const TextStyle(
                                                       fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
+                                                      fontSize: 15,
                                                       color: Colors.black87,
                                                     ),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
-                                                  const SizedBox(height: 4),
+                                                  const SizedBox(height: 2),
                                                   Text(
                                                     r.relativeTimeDescription ?? _formatTime(r.time),
                                                     style: TextStyle(
                                                       color: MyTheme.font_grey,
-                                                      fontSize: 12,
+                                                      fontSize: 11,
                                                     ),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
@@ -390,11 +390,11 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                         ),
                                       ),
                                       
-                                      const SizedBox(height: 12),
+                                      const SizedBox(height: 6),
                                       
                                       // Star rating - Fixed height section
                                       SizedBox(
-                                        height: 30,
+                                        height: 24,
                                         child: Row(
                                           children: [
                                             ...List.generate(5, (i) {
@@ -407,44 +407,44 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                                         ? Icons.star_half
                                                         : Icons.star_border,
                                                 color: Colors.amber[600],
-                                                size: 20,
+                                                size: 18,
                                               );
                                             }),
-                                            const SizedBox(width: 8),
+                                            const SizedBox(width: 6),
                                             Text(
                                               '${r.rating.toStringAsFixed(1)}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16,
+                                                fontSize: 14,
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
                                       
-                                      const SizedBox(height: 16),
+                                      const SizedBox(height: 8),
                                       
                                       // Review text - Flexible section that adapts to content
                                       Flexible(
                                         child: Container(
                                           width: double.infinity,
-                                          constraints: BoxConstraints(
-                                            minHeight: 80, // Minimum height for short reviews
-                                            maxHeight: 200, // Maximum height for long reviews
+                                          constraints: const BoxConstraints(
+                                            minHeight: 36, // Compact minimum height
+                                            maxHeight: 120, // Maximum height for long reviews
                                           ),
-                                          padding: const EdgeInsets.all(12),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                           decoration: BoxDecoration(
                                             color: Colors.grey.shade50,
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           child: SingleChildScrollView(
                                             physics: const BouncingScrollPhysics(),
                                             child: Text(
                                               r.text,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Colors.black87,
-                                                height: 1.6,
-                                                fontSize: 14,
+                                                height: 1.4,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w400,
                                               ),
                                             ),
@@ -452,15 +452,15 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                                         ),
                                       ),
                                       
-                                      const SizedBox(height: 16),
+                                      const SizedBox(height: 8),
                                       
                                       // Bottom info - Fixed height section
                                       Container(
-                                        height: 40,
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        height: 32,
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                         decoration: BoxDecoration(
                                           color: MyTheme.accent_color.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Row(
                                           children: [
@@ -493,7 +493,7 @@ class _GoogleReviewsSectionState extends State<GoogleReviewsSection>
                       },
                     ),
                     
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 8),
                   ],
                 );
               },

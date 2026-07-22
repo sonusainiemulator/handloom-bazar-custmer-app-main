@@ -14,40 +14,34 @@ class BulkSmsPlansService {
   }
 
   /// Sends the OTP to the specified phone number via bulksmsplans.com.
-  /// If API credentials are not configured, it runs in Demo/Mock Mode.
-  static Future<bool> sendOTP(String phoneNumber, String otpCode) async {
+  /// [name] is used in the DLT approved template greeting (defaults to "Customer").
+  /// Fails if API credentials are not configured.
+  static Future<bool> sendOTP(String phoneNumber, String otpCode, {String name = "Customer"}) async {
     try {
       // Normalize number format (e.g., 91XXXXXXXXXX)
       String formattedNumber = formatNumberForBulkSms(phoneNumber);
-      
-      // Store the OTP and its expiration time (5 minutes from now)
-      _otpCache[phoneNumber] = _OtpData(
-        code: otpCode,
-        expiryTime: DateTime.now().add(const Duration(minutes: 5)),
-      );
 
-      final String message = "Your Handloom Bazar verification OTP is: $otpCode. Valid for 5 minutes.";
-      
+      // Must match the DLT approved template exactly (Template ID: 193236)
+      final String recipientName = name.trim().isEmpty ? "Customer" : name.trim();
+      final String message = "Hello $recipientName, Your Handloom Bazar login OTP is $otpCode. Do not share it with anyone";
+
       // Retrieve API config credentials
       final String apiId = OtherConfig.BULK_SMS_PLANS_API_ID.trim();
       final String apiPassword = OtherConfig.BULK_SMS_PLANS_API_PASSWORD.trim();
       final String senderId = OtherConfig.BULK_SMS_PLANS_SENDER_ID.trim();
       final String smsType = OtherConfig.BULK_SMS_PLANS_SMS_TYPE.trim();
+      final String dltTemplateId = OtherConfig.BULK_SMS_PLANS_DLT_TEMPLATE_ID.trim();
 
-      // Check if credentials are missing or default
+      // Require a configured SMS gateway; do not fall back to mock/demo codes.
       if (apiId.isEmpty || apiPassword.isEmpty || apiId == "YOUR_API_ID") {
-        // Run in Demo / Mock Mode
-        print("\n=== [BulkSMSPlans Demo Mode] ===");
-        print("Phone Number: $phoneNumber (Formatted: $formattedNumber)");
-        print("OTP Code: $otpCode");
-        print("Message: $message");
-        print("=================================\n");
-        
-        ToastComponent.showDialog("[Demo Mode] OTP code is $otpCode (printed to console)");
-        return true;
+        print("[BulkSMSPlans] SMS gateway is not configured.");
+        ToastComponent.showDialog(
+          "OTP login is not configured. Please set BulkSMSPlans API credentials.",
+        );
+        return false;
       }
 
-      // Construct HTTP GET url for BulkSMSPlans
+      // Construct HTTP GET url for BulkSMSPlans (dlt_te_id is required for India TRAI compliance)
       final String url = "https://www.bulksmsplans.com/api/send_sms"
           "?api_id=${Uri.encodeComponent(apiId)}"
           "&api_password=${Uri.encodeComponent(apiPassword)}"
@@ -55,13 +49,18 @@ class BulkSmsPlansService {
           "&sms_encoding=text"
           "&sender=${Uri.encodeComponent(senderId)}"
           "&number=${Uri.encodeComponent(formattedNumber)}"
-          "&message=${Uri.encodeComponent(message)}";
+          "&message=${Uri.encodeComponent(message)}"
+          "&dlt_te_id=${Uri.encodeComponent(dltTemplateId)}";
 
       print("[BulkSMSPlans] Requesting URL: $url");
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         print("[BulkSMSPlans] API response: ${response.body}");
+        _otpCache[phoneNumber] = _OtpData(
+          code: otpCode,
+          expiryTime: DateTime.now().add(const Duration(minutes: 5)),
+        );
         return true;
       } else {
         print("[BulkSMSPlans] API error: ${response.statusCode} - ${response.body}");

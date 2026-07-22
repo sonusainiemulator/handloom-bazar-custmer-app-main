@@ -29,7 +29,6 @@ import 'package:validators/validators.dart';
 
 import '../../custom/loading.dart';
 import '../../helpers/auth_helper.dart';
-import '../../repositories/address_repository.dart';
 import 'otp.dart';
 import 'otp_auth.dart';
 
@@ -42,7 +41,6 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   String _register_by = "email"; //phone or email
-  String initialCountry = 'US';
 
   var countries_code = <String?>[];
 
@@ -69,12 +67,7 @@ class _RegistrationState extends State<Registration> {
       overlays: [SystemUiOverlay.bottom],
     );
     super.initState();
-    fetch_country();
-  }
-
-  fetch_country() async {
-    var data = await AddressRepository().getCountryList();
-    data.countries.forEach((c) => countries_code.add(c.code));
+    countries_code = ['IN'];
   }
 
   @override
@@ -425,6 +418,10 @@ class _RegistrationState extends State<Registration> {
                           },
                           selectorConfig: SelectorConfig(
                             selectorType: PhoneInputSelectorType.DIALOG,
+                          ),
+                          initialValue: PhoneNumber(
+                            isoCode: 'IN',
+                            dialCode: '+91',
                           ),
                           ignoreBlank: false,
                           autoValidateMode: AutovalidateMode.disabled,

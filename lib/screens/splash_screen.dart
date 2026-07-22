@@ -60,16 +60,24 @@ class _SplashScreenState extends State<SplashScreen> {
                 Hero(
                   tag: "splashscreenImage",
                   child: Container(
-                    height: 100,
-                    width: 100,
-                    padding: EdgeInsets.all(16),
+                    height: 180,
+                    width: 180,
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: MyTheme.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Image.asset(
                       "assets/splash_screen_logo.png",
                       fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
                     ),
                   ),
                 ),

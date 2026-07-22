@@ -12,8 +12,7 @@ import 'package:active_ecommerce_cms_demo_app/helpers/auth_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/repositories/auth_repository.dart';
-import 'package:active_ecommerce_cms_demo_app/repositories/address_repository.dart';
-import 'package:active_ecommerce_cms_demo_app/services/bulk_sms_plans_service.dart';
+import 'package:active_ecommerce_cms_demo_app/data_model/common_response.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/auth_ui.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
@@ -32,7 +31,6 @@ class _OtpAuthState extends State<OtpAuth> {
 
   // Verification stage
   bool _otpSent = false;
-  String _generatedOtp = "";
 
   // Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -44,9 +42,8 @@ class _OtpAuthState extends State<OtpAuth> {
   final List<TextEditingController> _otpDigitControllers = List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _otpDigitFocusNodes = List.generate(6, (_) => FocusNode());
 
-  // Country Code variables (compatible with existing address repository)
+  // Phone number (full format with country code, e.g. +919876543210)
   String? _phoneComplete = "";
-  var _countriesCode = <String?>[];
 
   // Countdown timer for Resending OTP
   Timer? _timer;
@@ -61,20 +58,6 @@ class _OtpAuthState extends State<OtpAuth> {
     );
     super.initState();
     _isRegisterMode = widget.initialIsRegister;
-    _fetchCountries();
-  }
-
-  Future<void> _fetchCountries() async {
-    try {
-      var data = await AddressRepository().getCountryList();
-      if (mounted) {
-        setState(() {
-          _countriesCode = data.countries.map((c) => c.code).toList();
-        });
-      }
-    } catch (e) {
-      print("Error fetching countries: $e");
-    }
   }
 
   @override
@@ -118,7 +101,7 @@ class _OtpAuthState extends State<OtpAuth> {
     });
   }
 
-  // Generate and Send OTP
+  // Send OTP via Backend (secure — no credentials stored in app)
   Future<void> _sendOtpRequest() async {
     FocusScope.of(context).unfocus();
 
@@ -147,43 +130,63 @@ class _OtpAuthState extends State<OtpAuth> {
     }
 
     Loading.show(context);
-    _generatedOtp = BulkSmsPlansService.generateOTP();
+    try {
+      CommonResponse otpResponse;
+      if (_isRegisterMode) {
+        otpResponse = await AuthRepository().getOtpRegistrationResponse(
+          _phoneComplete!,
+          name: _nameController.text.trim(),
+        );
+      } else {
+        otpResponse = await AuthRepository().getOtpLoginResponse(_phoneComplete!);
+      }
+      Loading.close();
 
-    bool success = await BulkSmsPlansService.sendOTP(_phoneComplete!, _generatedOtp);
-    Loading.close();
-
-    if (success) {
-      setState(() {
-        _otpSent = true;
-      });
-      _startTimer();
-      ToastComponent.showDialog("OTP sent successfully!");
-    } else {
-      ToastComponent.showDialog("Failed to send OTP. Please try again.");
+      if (otpResponse.result == true) {
+        setState(() { _otpSent = true; });
+        _startTimer();
+        ToastComponent.showDialog("OTP sent successfully!");
+      } else {
+        String errMsg = "Failed to send OTP. Please try again.";
+        if (otpResponse.message != null) {
+          errMsg = otpResponse.message.toString();
+        }
+        ToastComponent.showDialog(errMsg);
+      }
+    } catch (e) {
+      Loading.close();
+      print("[OtpAuth] sendOtp error: $e");
+      ToastComponent.showDialog("Error sending OTP: ${e.toString()}");
     }
   }
 
-  // Submit OTP and authenticate
+  // Verify OTP with backend, then register/login
   Future<void> _verifyAndSubmit() async {
     FocusScope.of(context).unfocus();
-    
+
     String enteredOtp = _otpDigitControllers.map((c) => c.text).join();
     if (enteredOtp.length != 6) {
       ToastComponent.showDialog("Please enter the complete 6-digit OTP code");
       return;
     }
 
-    // Verify OTP code
-    bool isOtpValid = BulkSmsPlansService.verifyOTP(_phoneComplete!, enteredOtp);
-    if (!isOtpValid) {
-      ToastComponent.showDialog("Invalid or expired OTP code");
-      return;
-    }
-
     Loading.show(context);
     try {
+      // Step 1: Verify OTP with backend
+      var verifyResponse = await AuthRepository().getVerifyOtpResponse(_phoneComplete!, enteredOtp);
+
+      if (verifyResponse.result != true) {
+        Loading.close();
+        String errMsg = "Invalid or expired OTP code";
+        if (verifyResponse.message != null) {
+          errMsg = verifyResponse.message.toString();
+        }
+        ToastComponent.showDialog(errMsg);
+        return;
+      }
+
+      // Step 2: OTP is valid — proceed to register or login
       if (_isRegisterMode) {
-        // Register the user on backend
         var signupResponse = await AuthRepository().getSignupResponse(
           _nameController.text.trim(),
           _phoneComplete!,
@@ -194,7 +197,7 @@ class _OtpAuthState extends State<OtpAuth> {
         );
         Loading.close();
 
-        if (signupResponse.result == false) {
+        if (signupResponse.result != true) {
           String errMsg = "Registration failed";
           if (signupResponse.message != null) {
             if (signupResponse.message is List) {
@@ -205,46 +208,33 @@ class _OtpAuthState extends State<OtpAuth> {
           }
           ToastComponent.showDialog(errMsg);
         } else {
-          ToastComponent.showDialog(signupResponse.message);
+          ToastComponent.showDialog(signupResponse.message?.toString() ?? "Registered successfully!");
           AuthHelper().setUserData(signupResponse);
-          if (mounted) {
-            context.go("/");
-          }
+          if (mounted) context.go("/");
         }
       } else {
-        // OTP Login on backend
-        // Since backend uses password-based login, we attempt loginWithOtp
+        // Login: OTP verified — now authenticate with backend login-with-otp
         var loginResponse = await AuthRepository().loginWithOtp(_phoneComplete!, enteredOtp);
         Loading.close();
 
-        if (loginResponse.result == false) {
-          // If loginWithOtp endpoint is not implemented on backend, fallback
-          String errMsg = "OTP Login failed. Please register if you haven't already.";
+        if (loginResponse.result != true) {
+          String errMsg = "Login failed. Please try again.";
           if (loginResponse.message != null) {
             errMsg = loginResponse.message.toString();
           }
           ToastComponent.showDialog(errMsg);
+        } else if (loginResponse.access_token == null || loginResponse.access_token!.isEmpty) {
+          ToastComponent.showDialog("Login failed: server did not return an access token.");
         } else {
-          ToastComponent.showDialog("Login successful!");
           AuthHelper().setUserData(loginResponse);
-          if (mounted) {
-            context.go("/");
-          }
+          ToastComponent.showDialog("Login successful!");
+          if (mounted) context.go("/");
         }
       }
     } catch (e) {
       Loading.close();
-      
-      // Fallback behavior if backend API returns 404/Error for loginWithOtp endpoint
-      if (!_isRegisterMode && e.toString().contains("404") || e.toString().contains("FormatException")) {
-        // Fallback: Notify the user and offer password-based login
-        ToastComponent.showDialog("Passwordless OTP Login is not configured on the backend. Log in using your password.");
-        if (mounted) {
-          Navigator.pop(context); // Close OTP screen, go back to standard password login
-        }
-      } else {
-        ToastComponent.showDialog("An error occurred: ${e.toString()}");
-      }
+      print("[OtpAuth] verifyAndSubmit error: $e");
+      ToastComponent.showDialog("Error: ${e.toString()}");
     }
   }
 
@@ -379,7 +369,8 @@ class _OtpAuthState extends State<OtpAuth> {
               SizedBox(
                 height: 38,
                 child: CustomInternationalPhoneNumberInput(
-                  countries: _countriesCode,
+                  countries: const ['IN'],
+                  initialValue: PhoneNumber(isoCode: 'IN', dialCode: '+91'),
                   onInputChanged: (PhoneNumber number) {
                     setState(() {
                       _phoneComplete = number.phoneNumber;

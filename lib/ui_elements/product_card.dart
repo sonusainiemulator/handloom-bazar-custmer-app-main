@@ -55,18 +55,33 @@ class _ProductCardState extends State<ProductCard> {
         );
       },
       child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
         child: Stack(
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 AspectRatio(
-                  aspectRatio: 1,
+                  aspectRatio: 0.85,
                   child: Stack(children: [
                     SizedBox(
                       width: double.infinity,
                       child: ClipRRect(
                         clipBehavior: Clip.hardEdge,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/placeholder.png',
                           image: widget.image ?? 'assets/placeholder.png',
@@ -81,8 +96,8 @@ class _ProductCardState extends State<ProductCard> {
                         bottom: 0,
                         child: Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
+                              const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: const BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(6),
@@ -90,13 +105,13 @@ class _ProductCardState extends State<ProductCard> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0x14000000),
+                                color: Color(0x14000000),
                                 offset: Offset(-1, 1),
                                 blurRadius: 1,
                               ),
                             ],
                           ),
-                          child: Text(
+                          child: const Text(
                             "Wholesale",
                             style: TextStyle(
                               fontSize: 10,
@@ -119,22 +134,22 @@ class _ProductCardState extends State<ProductCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
                         child: Text(
                           widget.name ?? 'No Name',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
                             color: MyTheme.font_grey,
-                            fontSize: 14,
+                            fontSize: 13,
                             height: 1.2,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       if (widget.has_discount)
                         Padding(
-                          padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
                           child: Text(
                             convertPrice(widget.stroked_price ?? ''),
                             textAlign: TextAlign.left,

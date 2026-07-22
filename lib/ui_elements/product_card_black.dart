@@ -53,19 +53,32 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
         );
       },
       child: Container(
-        //decoration: BoxDecorations.buildBoxDecoration_1(),
-        //decoration: BoxDecoration(color: Color(0xffF6F5FA)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
         child: Stack(
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 AspectRatio(
-                  aspectRatio: 1,
+                  aspectRatio: 0.85,
                   child: SizedBox(
                     width: double.infinity,
                     child: ClipRRect(
                       clipBehavior: Clip.hardEdge,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/placeholder.png',
                         image: widget.image ?? 'assets/placeholder.png',
@@ -81,22 +94,22 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
                         child: Text(
                           widget.name ?? 'No Name',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
                             color: MyTheme.font_grey,
-                            fontSize: 14,
+                            fontSize: 13,
                             height: 1.2,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       if (widget.has_discount)
                         Padding(
-                          padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
                           child: Text(
                             SystemConfig.systemCurrency != null
                                 ? widget.stroked_price?.replaceAll(
@@ -110,15 +123,15 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                             style: TextStyle(
                               decoration: TextDecoration.lineThrough,
                               color: MyTheme.medium_grey,
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                         )
                       else
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 4.0),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        padding: const EdgeInsets.fromLTRB(10, 2, 10, 10),
                         child: Text(
                           SystemConfig.systemCurrency != null
                               ? widget.main_price?.replaceAll(
@@ -129,9 +142,9 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xff000000),
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

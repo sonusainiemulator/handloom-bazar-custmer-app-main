@@ -32,7 +32,6 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 //import 'package:twitter_login/twitter_login.dart';
 
 import '../../custom/loading.dart';
-import '../../repositories/address_repository.dart';
 import 'otp.dart';
 import 'otp_auth.dart';
 
@@ -47,7 +46,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String _login_by = "email"; //phone or email
-  String initialCountry = 'US';
   bool _isNavigatingAfterLogin = false;
   bool _isSubmittingLogin = false;
 
@@ -69,7 +67,7 @@ class _LoginState extends State<Login> {
       overlays: [SystemUiOverlay.bottom],
     );
     super.initState();
-    fetch_country();
+    countries_code = ['IN'];
     
     // If phone number is provided, set it and switch to phone login
     if (widget.phoneNumber != null && widget.phoneNumber!.isNotEmpty) {
@@ -77,11 +75,6 @@ class _LoginState extends State<Login> {
       _phoneNumberController.text = widget.phoneNumber!;
       _login_by = "phone";
     }
-  }
-
-  fetch_country() async {
-    var data = await AddressRepository().getCountryList();
-    data.countries.forEach((c) => countries_code.add(c.code));
   }
 
   @override
@@ -434,7 +427,7 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
+                padding: const EdgeInsets.only(bottom: 6.0),
                 child: Text(
                   _login_by == "email"
                       ? AppLocalizations.of(context)!.email_ucf
@@ -442,25 +435,32 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ),
               if (_login_by == "email")
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 14.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 36,
+                      Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                        ),
                         child: TextField(
                           controller: _emailController,
                           autofocus: false,
+                          style: const TextStyle(fontSize: 14),
                           decoration: InputDecorations.buildInputDecoration_1(
                             hint_text: "johndoe@example.com",
                           ),
                         ),
                       ),
+                      const SizedBox(height: 6),
                       otp_addon_installed.$
                           ? GestureDetector(
                             onTap: () {
@@ -474,7 +474,8 @@ class _LoginState extends State<Login> {
                               )!.or_login_with_a_phone,
                               style: TextStyle(
                                 color: MyTheme.accent_color,
-                                fontStyle: FontStyle.italic,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
@@ -485,12 +486,16 @@ class _LoginState extends State<Login> {
                 )
               else
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 14.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 36,
+                      Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                        ),
                         child: CustomInternationalPhoneNumberInput(
                           countries: countries_code,
                           onInputChanged: (PhoneNumber number) {
@@ -502,8 +507,12 @@ class _LoginState extends State<Login> {
                           onInputValidated: (bool value) {
                             print(value);
                           },
-                          selectorConfig: SelectorConfig(
+                          selectorConfig: const SelectorConfig(
                             selectorType: PhoneInputSelectorType.DIALOG,
+                          ),
+                          initialValue: PhoneNumber(
+                            isoCode: 'IN',
+                            dialCode: '+91',
                           ),
                           ignoreBlank: false,
                           autoValidateMode: AutovalidateMode.disabled,
@@ -511,11 +520,9 @@ class _LoginState extends State<Login> {
                             color: MyTheme.font_grey,
                           ),
                           textStyle: TextStyle(color: MyTheme.font_grey),
-                          // initialValue: PhoneNumber(
-                          //     isoCode: countries_code[0].toString()),
                           textFieldController: _phoneNumberController,
                           formatInput: true,
-                          keyboardType: TextInputType.numberWithOptions(
+                          keyboardType: const TextInputType.numberWithOptions(
                             signed: true,
                             decimal: true,
                           ),
@@ -528,6 +535,7 @@ class _LoginState extends State<Login> {
                           },
                         ),
                       ),
+                      const SizedBox(height: 6),
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -538,7 +546,8 @@ class _LoginState extends State<Login> {
                           AppLocalizations.of(context)!.or_login_with_an_email,
                           style: TextStyle(
                             color: MyTheme.accent_color,
-                            fontStyle: FontStyle.italic,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -547,33 +556,40 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
+                padding: const EdgeInsets.only(bottom: 6.0),
                 child: Text(
                   AppLocalizations.of(context)!.password_ucf,
                   style: TextStyle(
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 14.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      height: 36,
+                    Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                      ),
                       child: TextField(
                         controller: _passwordController,
                         autofocus: false,
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
+                        style: const TextStyle(fontSize: 14),
                         decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "* * * * * * * *",
+                          hint_text: "••••••••",
                         ),
                       ),
                     ),
+                    const SizedBox(height: 6),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -591,7 +607,8 @@ class _LoginState extends State<Login> {
                         )!.login_screen_forgot_password,
                         style: TextStyle(
                           color: MyTheme.accent_color,
-                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -599,29 +616,26 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
+              // Main Log In Button
               Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: MyTheme.textfield_grey, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  child: Btn.minWidthFixHeight(
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 50,
-                    color: MyTheme.accent_color,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(6.0),
+                padding: const EdgeInsets.only(top: 16.0),
+                child: SizedBox(
+                  height: 46,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyTheme.accent_color,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.login_screen_log_in,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     onPressed: () {
@@ -630,28 +644,25 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+              // OTP Login Option
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: MyTheme.accent_color, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  child: Btn.minWidthFixHeight(
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 50,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12.0),
+                child: SizedBox(
+                  height: 46,
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: MyTheme.accent_color, width: 1.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    child: Text(
+                    icon: Icon(Icons.phonelink_ring_rounded, size: 18, color: MyTheme.accent_color),
+                    label: const Text(
                       "Login / Register with OTP",
                       style: TextStyle(
                         color: MyTheme.accent_color,
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -668,32 +679,43 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+              // Divider/OR Text
               Padding(
-                padding: const EdgeInsets.only(top: 15.0, bottom: 15),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(
-                      context,
-                    )!.login_screen_or_create_new_account,
-                    style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
-                  ),
+                padding: const EdgeInsets.only(top: 20.0, bottom: 12),
+                child: Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.login_screen_or_create_new_account,
+                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
+                  ],
                 ),
               ),
+              // Clean Sign Up Button
               SizedBox(
-                height: 45,
-                child: Btn.minWidthFixHeight(
-                  minWidth: MediaQuery.of(context).size.width,
-                  height: 50,
-                  color: MyTheme.amber,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                height: 46,
+                width: double.infinity,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: MyTheme.accent_color.withOpacity(0.06),
+                    side: BorderSide(color: MyTheme.accent_color.withOpacity(0.3), width: 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.login_screen_sign_up,
                     style: TextStyle(
                       color: MyTheme.accent_color,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   onPressed: () {

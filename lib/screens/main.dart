@@ -147,106 +147,106 @@ class _MainState extends State<Main> {
               return _children[index];
             },
           ),
-      bottomNavigationBar: LayoutBuilder(
-  builder: (context, constraints) {
-    return SizedBox(
-      height: 70,
-      child: ValueListenableBuilder<int>(
-        valueListenable: _currentIndex,
-        builder: (context, currentIndex, _) {
-          return BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            onTap: onTapped,
-            currentIndex: currentIndex,  // Use the listenable value
-            backgroundColor: Colors.white.withOpacity(0.95),
-            unselectedItemColor: const Color.fromRGBO(168, 175, 179, 1),
-            selectedItemColor: MyTheme.accent_color,
-            selectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: ValueListenableBuilder<int>(
+              valueListenable: _currentIndex,
+              builder: (context, currentIndex, _) {
+                return BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  onTap: onTapped,
+                  currentIndex: currentIndex, // Use the listenable value
+                  backgroundColor: Colors.white.withOpacity(0.95),
+                  unselectedItemColor: const Color.fromRGBO(168, 175, 179, 1),
+                  selectedItemColor: MyTheme.accent_color,
+                  selectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                  ),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Image.asset(
+                          "assets/home.png",
+                          color: currentIndex == 0
+                              ? MyTheme.accent_color
+                              : const Color.fromRGBO(153, 153, 153, 1),
+                          height: 16,
+                        ),
+                      ),
+                      label: AppLocalizations.of(context)!.home_ucf,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Image.asset(
+                          "assets/categories.png",
+                          color: currentIndex == 1
+                              ? MyTheme.accent_color
+                              : const Color.fromRGBO(153, 153, 153, 1),
+                          height: 16,
+                        ),
+                      ),
+                      label: AppLocalizations.of(context)!.categories_ucf,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: badges.Badge(
+                          badgeStyle: badges.BadgeStyle(
+                            shape: badges.BadgeShape.circle,
+                            badgeColor: MyTheme.accent_color,
+                            borderRadius: BorderRadius.circular(10),
+                            padding: const EdgeInsets.all(5),
+                          ),
+                          badgeContent: Builder(
+                            builder: (context) {
+                              final count = Provider.of<CartCounter>(
+                                context,
+                              ).cartCounter;
+                              return Text(
+                                "$count",
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                          child: Image.asset(
+                            "assets/cart.png",
+                            color: currentIndex == 2
+                                ? MyTheme.accent_color
+                                : const Color.fromRGBO(153, 153, 153, 1),
+                            height: 16,
+                          ),
+                        ),
+                      ),
+                      label: AppLocalizations.of(context)!.cart_ucf,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Image.asset(
+                          "assets/profile.png",
+                          color: currentIndex == 3
+                              ? MyTheme.accent_color
+                              : const Color.fromRGBO(153, 153, 153, 1),
+                          height: 16,
+                        ),
+                      ),
+                      label: AppLocalizations.of(context)!.profile_ucf,
+                    ),
+                  ],
+                );
+              },
             ),
-            unselectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-            ),
-            items: [
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Image.asset(
-                    "assets/home.png",
-                    color: currentIndex == 0
-                        ? MyTheme.accent_color
-                        : const Color.fromRGBO(153, 153, 153, 1),
-                    height: 16,
-                  ),
-                ),
-                label: AppLocalizations.of(context)!.home_ucf,
-              ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Image.asset(
-                    "assets/categories.png",
-                    color: currentIndex == 1
-                        ? MyTheme.accent_color
-                        : const Color.fromRGBO(153, 153, 153, 1),
-                    height: 16,
-                  ),
-                ),
-                label: AppLocalizations.of(context)!.categories_ucf,
-              ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: badges.Badge(
-                    badgeStyle: badges.BadgeStyle(
-                      shape: badges.BadgeShape.circle,
-                      badgeColor: MyTheme.accent_color,
-                      borderRadius: BorderRadius.circular(10),
-                      padding: const EdgeInsets.all(5),
-                    ),
-                    badgeContent: Builder(
-                      builder: (context) {
-                        final count = Provider.of<CartCounter>(context).cartCounter;
-                        return Text(
-                          "$count",
-                          style: const TextStyle(fontSize: 10, color: Colors.white),
-                        );
-                      },
-                    ),
-                    child: Image.asset(
-                      "assets/cart.png",
-                      color: currentIndex == 2
-                          ? MyTheme.accent_color
-                          : const Color.fromRGBO(153, 153, 153, 1),
-                      height: 16,
-                    ),
-                  ),
-                ),
-                label: AppLocalizations.of(context)!.cart_ucf,
-              ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Image.asset(
-                    "assets/profile.png",
-                    color: currentIndex == 3
-                        ? MyTheme.accent_color
-                        : const Color.fromRGBO(153, 153, 153, 1),
-                    height: 16,
-                  ),
-                ),
-                label: AppLocalizations.of(context)!.profile_ucf,
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  },
-),
-
+          ),
         ),
       ),
     );

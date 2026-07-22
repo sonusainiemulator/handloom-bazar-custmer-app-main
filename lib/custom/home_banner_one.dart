@@ -20,7 +20,8 @@ class HomeBannerOne extends StatefulWidget {
 }
 
 class _HomeBannerOneState extends State<HomeBannerOne> {
-  final CarouselSliderController _carouselController = CarouselSliderController();
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
   int _currentPage = 0;
 
   Widget _buildBannerItem(dynamic banner, BuildContext context) {
@@ -80,7 +81,7 @@ class _HomeBannerOneState extends State<HomeBannerOne> {
       // Group banners into pages of 6 (2 rows x 3 columns)
       final allBanners = widget.homeData!.bannerOneImageList;
       final List<List<dynamic>> pages = [];
-      
+
       for (int i = 0; i < allBanners.length; i += 6) {
         pages.add(allBanners.skip(i).take(6).toList());
       }
@@ -90,7 +91,8 @@ class _HomeBannerOneState extends State<HomeBannerOne> {
           CarouselSlider(
             carouselController: _carouselController,
             options: CarouselOptions(
-              height: 256,
+              // Keep enough vertical space for 2x120 cards + row gap + page padding.
+              height: 268,
               viewportFraction: 1.0,
               enableInfiniteScroll: pages.length > 1,
               autoPlay: pages.length > 1,
@@ -108,7 +110,8 @@ class _HomeBannerOneState extends State<HomeBannerOne> {
               final secondRow = pageBanners.skip(3).take(3).toList();
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
                 child: Column(
                   children: [
                     // First Row - 3 columns
@@ -157,7 +160,7 @@ class _HomeBannerOneState extends State<HomeBannerOne> {
               );
             }).toList(),
           ),
-          
+
           // Page indicators
           if (pages.length > 1)
             Row(

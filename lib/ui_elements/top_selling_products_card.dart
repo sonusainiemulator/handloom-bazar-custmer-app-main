@@ -2,6 +2,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.da
 import 'package:flutter/material.dart';
 
 import '../helpers/main_helpers.dart';
+import '../my_theme.dart';
 
 // ignore: must_be_immutable
 class TopSellingProductsCard extends StatefulWidget {
@@ -31,6 +32,7 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ProductDetails(
@@ -39,93 +41,86 @@ class _TopSellingProductsCardState extends State<TopSellingProductsCard> {
         }));
       },
       child: Container(
-        height: 90,
+        height: 102,
         decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200, width: 0.8),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 16,
-                  offset: Offset(0, 0))
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3))
             ]),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-          SizedBox(
-              width: 90,
-              height: 90,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              width: 85,
+              height: 102,
               child: ClipRRect(
-                  borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(6), right: Radius.zero),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/placeholder.png',
-                    image: widget.image ?? 'assets/placeholder.png',
-                    fit: BoxFit.cover,
-                  ))),
-          Flexible(
-            child: Container(
-              padding:
-                  EdgeInsets.only(top: 14, left: 14, right: 34, bottom: 14),
-              //width: 240,
-              height: 90,
-              //color: Colors.red,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    //color:Colors.blue,
-                    child: Text(
+                borderRadius: const BorderRadius.horizontal(
+                    left: Radius.circular(11), right: Radius.zero),
+                child: FadeInImage.assetNetwork(
+                  placeholder: 'assets/placeholder.png',
+                  image: widget.image ?? 'assets/placeholder.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       widget.name ?? '',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: TextStyle(
-                          color: Color(0xff6B7377),
+                      style: const TextStyle(
+                          color: Color(0xff1E2022),
                           fontFamily: 'Public Sans',
-                          fontSize: 12,
-                          height: 1.6,
-                          fontWeight: FontWeight.normal),
+                          fontSize: 13,
+                          height: 1.3,
+                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  Container(
-                    //color: Colors.green,
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment.spaceBetween,
+                    const SizedBox(height: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
                       children: [
                         Text(
                           convertPrice(widget.main_price ?? ''),
-                          textAlign: TextAlign.left,
                           maxLines: 1,
                           style: TextStyle(
-                              color: Color(0xffE62E04),
-                              fontSize: 16,
+                              color: MyTheme.accent_color,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
-                          width: 18,
-                        ),
-                        (widget.has_discount ?? false)
-                            ? Text(
+                        if (widget.has_discount ?? false) ...[
+                          const SizedBox(width: 8),
+                          Text(
                             convertPrice(widget.stroked_price ?? ''),
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    fontFamily: 'Public Sans',
-                                    color: Color(0xffA8AFB3),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal),
-                              )
-                            : Container(),
+                            maxLines: 1,
+                            style: const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                fontFamily: 'Public Sans',
+                                color: Color(0xffA8AFB3),
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ],
                       ],
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }

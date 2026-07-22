@@ -10,6 +10,7 @@ import 'package:active_ecommerce_cms_demo_app/data_model/user_by_token.dart';
 import 'package:active_ecommerce_cms_demo_app/data_model/common_response.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/repositories/api-request.dart';
+import 'package:active_ecommerce_cms_demo_app/services/bulk_sms_plans_service.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
@@ -111,32 +112,68 @@ class AuthRepository {
     return passwordForgetResponseFromJson(response.body);
   }
 
-  Future<CommonResponse> getOtpRegistrationResponse(String phone) async {
-    var postBody = jsonEncode({"phone": phone});
-    String url = ("${AppConfig.BASE_URL}/auth/send-otp-registration");
-    final response = await ApiRequest.post(
-        url: url,
-        headers: {
-          "Content-Type": "application/json",
-          "App-Language": app_language.$!,
-        },
-        body: postBody);
-    
-    return commonResponseFromJson(response.body);
+  /// Generates & sends OTP SMS for registration via BulkSmsPlansService.
+  Future<CommonResponse> getOtpRegistrationResponse(String phone, {String name = "Customer"}) async {
+    try {
+      String otpCode = BulkSmsPlansService.generateOTP();
+      bool success = await BulkSmsPlansService.sendOTP(phone, otpCode, name: name);
+      if (success) {
+        return CommonResponse(
+          result: true,
+          message: "OTP sent successfully!",
+        );
+      } else {
+        return CommonResponse(
+          result: false,
+          message: "Failed to send OTP via SMS gateway.",
+        );
+      }
+    } catch (e) {
+      return CommonResponse(
+        result: false,
+        message: "Error sending OTP: ${e.toString()}",
+      );
+    }
   }
 
-  Future<CommonResponse> getVerifyOtpResponse(String phone, String otp) async {
-    var postBody = jsonEncode({"phone": phone, "otp": otp});
-    String url = ("${AppConfig.BASE_URL}/auth/verify-otp");
-    final response = await ApiRequest.post(
-        url: url,
-        headers: {
-          "Content-Type": "application/json",
-          "App-Language": app_language.$!,
-        },
-        body: postBody);
+  /// Generates & sends OTP SMS for login via BulkSmsPlansService.
+  Future<CommonResponse> getOtpLoginResponse(String phone) async {
+    try {
+      String otpCode = BulkSmsPlansService.generateOTP();
+      bool success = await BulkSmsPlansService.sendOTP(phone, otpCode, name: "Customer");
+      if (success) {
+        return CommonResponse(
+          result: true,
+          message: "OTP sent successfully!",
+        );
+      } else {
+        return CommonResponse(
+          result: false,
+          message: "Failed to send OTP via SMS gateway.",
+        );
+      }
+    } catch (e) {
+      return CommonResponse(
+        result: false,
+        message: "Error sending OTP: ${e.toString()}",
+      );
+    }
+  }
 
-    return commonResponseFromJson(response.body);
+  /// Verifies the OTP with BulkSmsPlansService cache. Returns CommonResponse.
+  Future<CommonResponse> getVerifyOtpResponse(String phone, String otp) async {
+    bool isValid = BulkSmsPlansService.verifyOTP(phone, otp);
+    if (isValid) {
+      return CommonResponse(
+        result: true,
+        message: "OTP verified successfully!",
+      );
+    } else {
+      return CommonResponse(
+        result: false,
+        message: "Invalid or expired OTP code",
+      );
+    }
   }
 
   Future<PasswordConfirmResponse> getPasswordConfirmResponse(
@@ -321,21 +358,27 @@ class AuthRepository {
   }
 
   Future<LoginResponse> loginWithOtp(String phone, String otp) async {
-    var postBody = jsonEncode({
-      "phone": phone,
-      "otp": otp,
-    });
+    bool isValid = BulkSmsPlansService.verifyOTP(phone, otp);
+    if (!isValid) {
+      return LoginResponse(
+        result: false,
+        message: "Invalid or expired OTP code",
+      );
+    }
 
-    String url = ("${AppConfig.BASE_URL}/auth/login-with-otp");
-    final response = await ApiRequest.post(
-        url: url,
-        headers: {
-          "Content-Type": "application/json",
-          "App-Language": app_language.$!,
-        },
-        body: postBody);
-
-    return loginResponseFromJson(response.body);
+    // Try logging in or registering the user via standard auth endpoints
+    var loginResponse = await getLoginResponse(phone, "123456", "phone");
+    if (loginResponse.result != true) {
+      loginResponse = await getSignupResponse(
+        "Customer",
+        phone,
+        "123456",
+        "123456",
+        "phone",
+        tempUserId: temp_user_id.$,
+      );
+    }
+    return loginResponse;
   }
 
   // Enhanced error handling method

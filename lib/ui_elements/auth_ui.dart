@@ -109,20 +109,38 @@ class AuthScreen {
       textDirection:
           app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8F9FA),
         body: Stack(
           children: [
-            // Background container
+            // Background Header with gradient
             Container(
-              height: DeviceInfo(context).height! / 3,
+              height: DeviceInfo(context).height! * 0.32,
               width: DeviceInfo(context).width,
-              color: MyTheme.accent_color,
-              alignment: Alignment.topRight,
-              child: Image.asset(
-                "assets/background_1.png",
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    MyTheme.accent_color,
+                    MyTheme.accent_color.withOpacity(0.85),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: 0.15,
+                      child: Image.asset(
+                        "assets/background_1.png",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            // CustomScrollView
+            // Scrollable Content
             CustomScrollView(
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
@@ -131,18 +149,25 @@ class AuthScreen {
                   delegate: SliverChildListDelegate(
                     [
                       Padding(
-                        padding: const EdgeInsets.only(top: 48.0),
+                        padding: const EdgeInsets.only(top: 54.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 12),
-                              width: 72,
-                              height: 72,
+                              padding: const EdgeInsets.all(12),
+                              width: 76,
+                              height: 76,
                               decoration: BoxDecoration(
-                                  color: MyTheme.white,
-                                  borderRadius: BorderRadius.circular(8)),
+                                color: MyTheme.white,
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.12),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 6),
+                                  )
+                                ],
+                              ),
                               child: Image.asset(
                                   'assets/login_registration_form_logo.png'),
                             ),
@@ -150,34 +175,46 @@ class AuthScreen {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0, top: 10),
+                        padding: const EdgeInsets.only(bottom: 24.0, top: 12),
                         child: Text(
                           headerText,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: MyTheme.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          decoration:
-                              BoxDecorations.buildBoxDecoration_1(radius: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.07),
+                                blurRadius: 24,
+                                spreadRadius: 2,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
                           child: child,
                         ),
                       ),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 )
               ],
             ),
-            // Cross Button
+            // Polished Close Button
             Positioned(
-              top: MediaQuery.of(context).padding.top + 10,
-              right: 10,
+              top: MediaQuery.of(context).padding.top + 12,
+              right: 16,
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
@@ -185,14 +222,13 @@ class AuthScreen {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.red
-                        .withOpacity(0.7), // Optional background color
+                    color: Colors.black.withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.close,
                     color: Colors.white,
-                    size: 24,
+                    size: 20,
                   ),
                 ),
               ),
