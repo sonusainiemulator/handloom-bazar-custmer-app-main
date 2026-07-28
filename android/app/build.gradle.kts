@@ -89,6 +89,13 @@ android {
             isDebuggable = true
         }
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val outputImpl = this as? com.android.build.gradle.internal.api.ApkVariantOutputImpl
+            outputImpl?.outputFileName = "handloombazar-user-app-v${defaultConfig.versionName}+${defaultConfig.versionCode}-${name}.apk"
+        }
+    }
 }
 
 flutter {
