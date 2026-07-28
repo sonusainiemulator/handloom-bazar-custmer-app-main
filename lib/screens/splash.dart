@@ -64,9 +64,9 @@ class _SplashState extends State<Splash> {
 
       //navigateAfterFuture: loadFromFuture(), //uncomment this
       title: Text(
-        "V ${_packageInfo.version}",
+        "V ${_packageInfo.version}+${_packageInfo.buildNumber} (${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')} ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')})",
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.white),
+            fontWeight: FontWeight.bold, fontSize: 12.0, color: Colors.white),
       ),
       useLoader: false,
       loadingText: Text(

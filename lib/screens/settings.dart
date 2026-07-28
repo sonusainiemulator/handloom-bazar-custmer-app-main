@@ -85,6 +85,16 @@ class _SettingsState extends State<Settings> {
             deleteWarningDialog(context);
           }),
           Divider(thickness: 1, color: MyTheme.light_grey),
+          SizedBox(height: 20),
+          Text(
+            "${AppConfig.app_name} v5.4.0+9",
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: MyTheme.dark_font_grey),
+          ),
+          SizedBox(height: 4),
+          Text(
+            "Build Date & Time: ${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')} ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}",
+            style: TextStyle(fontSize: 11, color: MyTheme.grey_153),
+          ),
         ],
       ),
     );

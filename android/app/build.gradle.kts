@@ -93,7 +93,12 @@ android {
     applicationVariants.all {
         outputs.all {
             val outputImpl = this as? com.android.build.gradle.internal.api.ApkVariantOutputImpl
-            outputImpl?.outputFileName = "handloombazar-user-app-v${defaultConfig.versionName}+${defaultConfig.versionCode}-${name}.apk"
+            val formattedDate = java.text.SimpleDateFormat("yyyyMMdd-HHmm").format(java.util.Date())
+            if (name == "debug") {
+                outputImpl?.outputFileName = "handloombazar-user-app-v${defaultConfig.versionName}+${defaultConfig.versionCode}-${formattedDate}-debug.apk"
+            } else {
+                outputImpl?.outputFileName = "handloombazar-user-app-v${defaultConfig.versionName}+${defaultConfig.versionCode}-release.apk"
+            }
         }
     }
 }
