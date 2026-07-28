@@ -64,11 +64,12 @@ class _PasswordForgetState extends State<PasswordForget> {
     if (_send_code_by == 'email' && email == "") {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_email);
       return;
-    } else if (_send_code_by == 'phone' && _phone == "") {
-      ToastComponent.showDialog(
-        AppLocalizations.of(context)!.enter_phone_number,
-      );
-      return;
+    } else if (_send_code_by == 'phone') {
+      String rawDigits = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+      if (_phone == "" || rawDigits.length != 10) {
+        ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
+        return;
+      }
     }
 
     if (_send_code_by == 'phone') {
@@ -299,6 +300,7 @@ class _PasswordForgetState extends State<PasswordForget> {
                         height: 36,
                         child: CustomInternationalPhoneNumberInput(
                           countries: countries_code,
+                          maxLength: 10,
                           onInputChanged: (PhoneNumber number) {
                             //print(number.phoneNumber);
                             setState(() {

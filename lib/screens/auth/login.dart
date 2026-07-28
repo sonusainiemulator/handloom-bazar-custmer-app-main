@@ -133,12 +133,13 @@ class _LoginState extends State<Login> {
         await Loading.close();
         ToastComponent.showDialog(AppLocalizations.of(context)!.enter_email);
         return;
-      } else if (_login_by == 'phone' && (_phone == "" || _phone == null)) {
-        await Loading.close();
-        ToastComponent.showDialog(
-          AppLocalizations.of(context)!.enter_phone_number,
-        );
-        return;
+      } else if (_login_by == 'phone') {
+        String rawDigits = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+        if (_phone == "" || _phone == null || rawDigits.length != 10) {
+          await Loading.close();
+          ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
+          return;
+        }
       } else if (password == "") {
         await Loading.close();
         ToastComponent.showDialog(AppLocalizations.of(context)!.enter_password);
@@ -498,6 +499,7 @@ class _LoginState extends State<Login> {
                         ),
                         child: CustomInternationalPhoneNumberInput(
                           countries: countries_code,
+                          maxLength: 10,
                           onInputChanged: (PhoneNumber number) {
                             print(number.phoneNumber);
                             setState(() {

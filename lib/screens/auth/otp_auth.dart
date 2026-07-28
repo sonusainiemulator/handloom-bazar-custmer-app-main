@@ -15,6 +15,8 @@ import 'package:active_ecommerce_cms_demo_app/repositories/auth_repository.dart'
 import 'package:active_ecommerce_cms_demo_app/data_model/common_response.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/auth_ui.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:sms_autofill/sms_autofill.dart';
+import 'package:smart_auth/smart_auth.dart';
 
 class OtpAuth extends StatefulWidget {
   final bool initialIsRegister;
@@ -25,7 +27,7 @@ class OtpAuth extends StatefulWidget {
   _OtpAuthState createState() => _OtpAuthState();
 }
 
-class _OtpAuthState extends State<OtpAuth> {
+class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
   // Toggle between Login & Register tabs
   late bool _isRegisterMode;
 
@@ -45,10 +47,16 @@ class _OtpAuthState extends State<OtpAuth> {
   // Phone number (full format with country code, e.g. +919876543210)
   String? _phoneComplete = "";
 
+  // App signature hash for SMS Retriever API (must be included at end of OTP SMS by backend)
+  // Fetched via _logAppSignature() — check logcat for the value.
+
   // Countdown timer for Resending OTP
   Timer? _timer;
   int _timerCountdown = 60;
   bool _canResend = false;
+
+  // SmartAuth for SMS User Consent API (no hash required — shows system dialog)
+  final _smartAuth = SmartAuth.instance;
 
   @override
   void initState() {
@@ -58,10 +66,70 @@ class _OtpAuthState extends State<OtpAuth> {
     );
     super.initState();
     _isRegisterMode = widget.initialIsRegister;
+    _logAppSignature();
+  }
+
+  /// Fetches the app signature hash needed for SMS Retriever API.
+  /// The backend must append this hash at the end of every OTP SMS.
+  /// Format: "Your OTP is 123456\n<YOUR_HASH>"
+  Future<void> _logAppSignature() async {
+    try {
+      final hash = await SmsAutoFill().getAppSignature;
+      print("[SMS Autofill] App Signature Hash: $hash");
+      print("[SMS Autofill] Add this hash at the END of your OTP SMS body.");
+    } catch (e) {
+      print("[SMS Autofill] Could not get app hash: $e");
+    }
+  }
+
+  /// Uses SMS User Consent API (smart_auth) — no hash needed.
+  /// Android shows a system dialog: "Allow app to read this SMS?"
+  /// On user tap "Allow", OTP is extracted and boxes are filled automatically.
+  Future<void> _startUserConsentListen() async {
+    try {
+      final res = await _smartAuth.getSmsWithUserConsentApi();
+      if (!mounted) return;
+      if (res.hasData) {
+        final smsCode = res.requireData.code;
+        if (smsCode != null && smsCode.isNotEmpty) {
+          final digits = smsCode.replaceAll(RegExp(r'\D'), '');
+          if (digits.length >= 6) {
+            final otp6 = digits.substring(0, 6);
+            for (int i = 0; i < 6; i++) {
+              _otpDigitControllers[i].text = otp6[i];
+            }
+            setState(() {});
+            _verifyAndSubmit();
+          }
+        }
+      }
+      // If canceled or error, user will fill manually or use Paste button
+    } catch (e) {
+      print("[SmartAuth] User consent error: $e");
+    }
+  }
+
+  @override
+  void codeUpdated() {
+    if (code != null && code!.isNotEmpty) {
+      String digitsOnly = code!.replaceAll(RegExp(r'\D'), '');
+      if (digitsOnly.length >= 6) {
+        String otp6 = digitsOnly.substring(0, 6);
+        for (int i = 0; i < 6; i++) {
+          _otpDigitControllers[i].text = otp6[i];
+        }
+        if (mounted) {
+          setState(() {});
+          _verifyAndSubmit();
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
+    cancel();
+    _smartAuth.removeUserConsentApiListener();
     _timer?.cancel();
     _nameController.dispose();
     _phoneNumberController.dispose();
@@ -105,8 +173,9 @@ class _OtpAuthState extends State<OtpAuth> {
   Future<void> _sendOtpRequest() async {
     FocusScope.of(context).unfocus();
 
-    if (_phoneComplete == null || _phoneComplete!.isEmpty) {
-      ToastComponent.showDialog("Please enter a valid phone number");
+    String rawDigits = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+    if (_phoneComplete == null || _phoneComplete!.isEmpty || rawDigits.length != 10) {
+      ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
       return;
     }
 
@@ -145,6 +214,8 @@ class _OtpAuthState extends State<OtpAuth> {
       if (otpResponse.result == true) {
         setState(() { _otpSent = true; });
         _startTimer();
+        listenForCode();          // Fallback: SMS Retriever API (needs hash in SMS)
+        _startUserConsentListen(); // Primary: shows system popup, no hash needed
         ToastComponent.showDialog("OTP sent successfully!");
       } else {
         String errMsg = "Failed to send OTP. Please try again.";
@@ -172,21 +243,21 @@ class _OtpAuthState extends State<OtpAuth> {
 
     Loading.show(context);
     try {
-      // Step 1: Verify OTP with backend
-      var verifyResponse = await AuthRepository().getVerifyOtpResponse(_phoneComplete!, enteredOtp);
-
-      if (verifyResponse.result != true) {
-        Loading.close();
-        String errMsg = "Invalid or expired OTP code";
-        if (verifyResponse.message != null) {
-          errMsg = verifyResponse.message.toString();
-        }
-        ToastComponent.showDialog(errMsg);
-        return;
-      }
-
-      // Step 2: OTP is valid — proceed to register or login
       if (_isRegisterMode) {
+        // Step 1: Verify OTP code
+        var verifyResponse = await AuthRepository().getVerifyOtpResponse(_phoneComplete!, enteredOtp);
+
+        if (verifyResponse.result != true) {
+          Loading.close();
+          String errMsg = "Invalid or expired OTP code";
+          if (verifyResponse.message != null) {
+            errMsg = verifyResponse.message.toString();
+          }
+          ToastComponent.showDialog(errMsg);
+          return;
+        }
+
+        // Step 2: Register user after OTP verified
         var signupResponse = await AuthRepository().getSignupResponse(
           _nameController.text.trim(),
           _phoneComplete!,
@@ -213,7 +284,7 @@ class _OtpAuthState extends State<OtpAuth> {
           if (mounted) context.go("/");
         }
       } else {
-        // Login: OTP verified — now authenticate with backend login-with-otp
+        // Login: loginWithOtp verifies OTP and authenticates in a single step
         var loginResponse = await AuthRepository().loginWithOtp(_phoneComplete!, enteredOtp);
         Loading.close();
 
@@ -371,6 +442,7 @@ class _OtpAuthState extends State<OtpAuth> {
                 child: CustomInternationalPhoneNumberInput(
                   countries: const ['IN'],
                   initialValue: PhoneNumber(isoCode: 'IN', dialCode: '+91'),
+                  maxLength: 10,
                   onInputChanged: (PhoneNumber number) {
                     setState(() {
                       _phoneComplete = number.phoneNumber;
@@ -498,54 +570,111 @@ class _OtpAuthState extends State<OtpAuth> {
           ),
           const SizedBox(height: 24),
 
-          // 6 digit input boxes
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, (index) {
-              return SizedBox(
-                width: 40,
-                height: 45,
-                child: TextField(
-                  controller: _otpDigitControllers[index],
-                  focusNode: _otpDigitFocusNodes[index],
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  maxLength: 1,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: MyTheme.dark_font_grey,
-                  ),
-                  decoration: InputDecoration(
-                    counterText: "",
-                    contentPadding: EdgeInsets.zero,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: MyTheme.textfield_grey),
-                      borderRadius: BorderRadius.circular(8),
+          // 6 digit input boxes with OS Autofill & Paste support
+          AutofillGroup(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(6, (index) {
+                return SizedBox(
+                  width: 40,
+                  height: 45,
+                  child: TextField(
+                    controller: _otpDigitControllers[index],
+                    focusNode: _otpDigitFocusNodes[index],
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    autofillHints: const [AutofillHints.oneTimeCode],
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: MyTheme.dark_font_grey,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: MyTheme.accent_color, width: 2),
-                      borderRadius: BorderRadius.circular(8),
+                    decoration: InputDecoration(
+                      counterText: "",
+                      contentPadding: EdgeInsets.zero,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: MyTheme.textfield_grey),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: MyTheme.accent_color, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  onChanged: (value) {
-                    if (value.isNotEmpty) {
-                      if (index < 5) {
-                        _otpDigitFocusNodes[index + 1].requestFocus();
+                    onChanged: (value) {
+                      String digits = value.replaceAll(RegExp(r'\D'), '');
+                      // Handle multi-digit autofill or paste
+                      if (digits.length > 1) {
+                        for (int i = 0; i < 6; i++) {
+                          if (i < digits.length) {
+                            _otpDigitControllers[i].text = digits[i];
+                          }
+                        }
+                        _otpDigitFocusNodes[5].unfocus();
+                        setState(() {});
+                        if (digits.length >= 6) {
+                          _verifyAndSubmit();
+                        }
+                        return;
+                      }
+                      
+                      // Handle single character typing
+                      if (value.isNotEmpty) {
+                        if (index < 5) {
+                          _otpDigitFocusNodes[index + 1].requestFocus();
+                        } else {
+                          _otpDigitFocusNodes[index].unfocus();
+                          _verifyAndSubmit();
+                        }
                       } else {
-                        _otpDigitFocusNodes[index].unfocus();
+                        if (index > 0) {
+                          _otpDigitFocusNodes[index - 1].requestFocus();
+                        }
                       }
-                    } else {
-                      if (index > 0) {
-                        _otpDigitFocusNodes[index - 1].requestFocus();
-                      }
-                    }
-                  },
-                ),
-              );
-            }),
+                    },
+                  ),
+                );
+              }),
+            ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 12),
+
+          // Paste OTP from clipboard button
+          OutlinedButton.icon(
+            onPressed: () async {
+              final clipData = await Clipboard.getData(Clipboard.kTextPlain);
+              final text = clipData?.text ?? '';
+              final digits = text.replaceAll(RegExp(r'\D'), '');
+              if (digits.length >= 6) {
+                for (int i = 0; i < 6; i++) {
+                  _otpDigitControllers[i].text = digits[i];
+                }
+                if (mounted) {
+                  setState(() {});
+                  _verifyAndSubmit();
+                }
+              } else if (digits.isNotEmpty) {
+                for (int i = 0; i < digits.length && i < 6; i++) {
+                  _otpDigitControllers[i].text = digits[i];
+                }
+                setState(() {});
+                ToastComponent.showDialog("Pasted $digits — please complete the remaining digits");
+              } else {
+                ToastComponent.showDialog("No OTP found in clipboard");
+              }
+            },
+            icon: const Icon(Icons.content_paste_rounded, size: 16),
+            label: const Text("Paste OTP"),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: MyTheme.accent_color,
+              side: BorderSide(color: MyTheme.accent_color),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+          const SizedBox(height: 18),
 
           // Submit Code Button
           SizedBox(

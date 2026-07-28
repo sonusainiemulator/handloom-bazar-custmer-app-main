@@ -1,4 +1,4 @@
-﻿import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
+import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/input_decorations.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/intl_phone_input.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/loading.dart';
@@ -268,16 +268,18 @@ class _FirebaseOtpVerificationState extends State<FirebaseOtpVerification> {
                 SizedBox(
                   height: 36,
                   child: CustomInternationalPhoneNumberInput(
+                    maxLength: 10,
                     onInputChanged: (PhoneNumber number) {
+                      String digitsOnly = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
                       setState(() {
                         this.number = number;
                         phoneNumberComplete = number.phoneNumber ?? "";
-                        _isPhoneNumberValid =
-                            phoneNumberComplete.length > 10;
+                        _isPhoneNumberValid = digitsOnly.length == 10;
                       });
                     },
                     onInputValidated: (bool value) {
-                      setState(() => _isPhoneNumberValid = value);
+                      String digitsOnly = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+                      setState(() => _isPhoneNumberValid = digitsOnly.length == 10);
                     },
                     selectorConfig: const SelectorConfig(
                       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,

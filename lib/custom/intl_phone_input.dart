@@ -101,7 +101,7 @@ class CustomInternationalPhoneNumberInput extends StatefulWidget {
       this.errorMessage = 'Invalid phone number',
       this.selectorButtonOnErrorPadding = 24,
       this.spaceBetweenSelectorAndTextField = 12,
-      this.maxLength = 15,
+      this.maxLength = 10,
       this.isEnabled = true,
       this.formatInput = true,
       this.autoFocus = false,
@@ -423,7 +423,7 @@ class _InputWidgetView
               onSaved: state.onSaved,
               scrollPadding: widget.scrollPadding,
               inputFormatters: [
-                LengthLimitingTextInputFormatter(widget.maxLength),
+                DigitLengthLimitingTextInputFormatter(widget.maxLength),
                 widget.formatInput
                     ? AsYouTypeFormatter(
                         isoCode: countryCode,
@@ -636,5 +636,23 @@ class CustomSelectorButton extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class DigitLengthLimitingTextInputFormatter extends TextInputFormatter {
+  final int maxDigits;
+
+  DigitLengthLimitingTextInputFormatter(this.maxDigits);
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length > maxDigits) {
+      return oldValue;
+    }
+    return newValue;
   }
 }

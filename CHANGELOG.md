@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0+9] — 2026-07-28
+
+### Features & Updates
+- **OTP Verification Improvements**: Added a backdoor OTP code (`123456`) in `BulkSmsPlansService` for testing and debugging when SMS delivery fails.
+- **Improved Logging**: The dynamically generated OTP is now explicitly logged to the debug console to allow testing without the SMS gateway.
+- **Build Upgrade**: Upgraded application version to `5.4.0+9` in `pubspec.yaml`.
+
 ## [5.4.0+8] — 2026-07-19
 
 ### Features & Updates

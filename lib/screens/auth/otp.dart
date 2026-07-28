@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../main.dart';
 
@@ -21,9 +22,23 @@ class Otp extends StatefulWidget {
   _OtpState createState() => _OtpState();
 }
 
-class _OtpState extends State<Otp> {
+class _OtpState extends State<Otp> with CodeAutoFill {
   //controllers
   final TextEditingController _verificationCodeController = TextEditingController();
+
+  @override
+  void codeUpdated() {
+    if (code != null && code!.isNotEmpty) {
+      String digitsOnly = code!.replaceAll(RegExp(r'\D'), '');
+      if (digitsOnly.isNotEmpty) {
+        _verificationCodeController.text = digitsOnly;
+        if (mounted) {
+          setState(() {});
+          onPressConfirm();
+        }
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -31,10 +46,26 @@ class _OtpState extends State<Otp> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.bottom]);
     super.initState();
+    listenForCode();
+    _logAppSignature();
+  }
+
+  /// Fetches and logs the app hash required by Android SMS Retriever API.
+  /// The backend must append this 11-char hash at the END of every OTP SMS.
+  /// Example SMS: "Your OTP is 123456\n<HASH>"
+  Future<void> _logAppSignature() async {
+    try {
+      final hash = await SmsAutoFill().getAppSignature;
+      print("[SMS Autofill] App Signature Hash: $hash");
+      print("[SMS Autofill] Include this at the END of your OTP SMS body.");
+    } catch (e) {
+      print("[SMS Autofill] Could not get app hash: $e");
+    }
   }
 
   @override
   void dispose() {
+    cancel();
     //before going to other screen show statusbar
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
@@ -135,9 +166,36 @@ class _OtpState extends State<Otp> {
                                 child: TextField(
                                   controller: _verificationCodeController,
                                   autofocus: false,
+                                  keyboardType: TextInputType.number,
+                                  autofillHints: const [AutofillHints.oneTimeCode],
                                   decoration:
                                       InputDecorations.buildInputDecoration_1(
                                           hint_text: "A X B 4 J H"),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              // Paste OTP from clipboard button
+                              OutlinedButton.icon(
+                                onPressed: () async {
+                                  final clipData = await Clipboard.getData(Clipboard.kTextPlain);
+                                  final text = clipData?.text ?? '';
+                                  final digits = text.replaceAll(RegExp(r'\D'), '');
+                                  if (digits.isNotEmpty) {
+                                    _verificationCodeController.text = digits.length >= 6 ? digits.substring(0, 6) : digits;
+                                    if (mounted) setState(() {});
+                                    if (digits.length >= 6) onPressConfirm();
+                                  } else {
+                                    ToastComponent.showDialog("No OTP found in clipboard");
+                                  }
+                                },
+                                icon: const Icon(Icons.content_paste_rounded, size: 16),
+                                label: const Text("Paste OTP"),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: MyTheme.accent_color,
+                                  side: BorderSide(color: MyTheme.accent_color),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             ],

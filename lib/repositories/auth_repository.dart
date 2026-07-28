@@ -366,17 +366,21 @@ class AuthRepository {
       );
     }
 
-    // Try logging in or registering the user via standard auth endpoints
-    var loginResponse = await getLoginResponse(phone, "123456", "phone");
+    // Authenticate phone user via social login endpoint (which accepts phone provider without password)
+    var loginResponse = await getSocialLoginResponse("phone", "Customer", phone, phone, "phone");
     if (loginResponse.result != true) {
-      loginResponse = await getSignupResponse(
-        "Customer",
-        phone,
-        "123456",
-        "123456",
-        "phone",
-        tempUserId: temp_user_id.$,
-      );
+      // Fallback: try standard phone login or signup
+      loginResponse = await getLoginResponse(phone, "123456", "phone");
+      if (loginResponse.result != true) {
+        loginResponse = await getSignupResponse(
+          "Customer",
+          phone,
+          "123456",
+          "123456",
+          "phone",
+          tempUserId: temp_user_id.$,
+        );
+      }
     }
     return loginResponse;
   }
