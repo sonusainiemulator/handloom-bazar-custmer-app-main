@@ -366,38 +366,80 @@ class AuthRepository {
       );
     }
 
-    // Authenticate phone user via social login endpoint (which accepts phone provider without password)
-    var loginResponse = await getSocialLoginResponse("phone", "Customer", phone, phone, "phone");
-    if (loginResponse.result != true) {
-      // Fallback: try standard phone login or signup
-      loginResponse = await getLoginResponse(phone, "123456", "phone");
-      if (loginResponse.result != true) {
-        loginResponse = await getSignupResponse(
-          "Customer",
-          phone,
-          "123456",
-          "123456",
-          "phone",
-          tempUserId: temp_user_id.$,
-        );
-      }
+    // 1. Try login with standard fallback passwords ("12345678", "123456")
+    var loginResponse = await getLoginResponse(phone, "12345678", "phone");
+    if (loginResponse.result == true && loginResponse.access_token != null && loginResponse.access_token!.isNotEmpty) {
+      return loginResponse;
     }
-    return loginResponse;
+
+    loginResponse = await getLoginResponse(phone, "123456", "phone");
+    if (loginResponse.result == true && loginResponse.access_token != null && loginResponse.access_token!.isNotEmpty) {
+      return loginResponse;
+    }
+
+    // 2. Try social login endpoint
+    loginResponse = await getSocialLoginResponse("phone", "Customer", phone, phone, "phone");
+    if (loginResponse.result == true && loginResponse.access_token != null && loginResponse.access_token!.isNotEmpty) {
+      return loginResponse;
+    }
+
+    // 3. Reset password for existing user with verified OTP and authenticate
+    try {
+      await getPasswordForgetResponse(phone, "phone");
+      var confirmResp = await getPasswordConfirmResponse(otp, "12345678", emailOrPhone: phone);
+      if (confirmResp.result == true) {
+        loginResponse = await getLoginResponse(phone, "12345678", "phone");
+        if (loginResponse.result == true && loginResponse.access_token != null && loginResponse.access_token!.isNotEmpty) {
+          return loginResponse;
+        }
+      }
+    } catch (e) {
+      print("[loginWithOtp] Reset fallback error: $e");
+    }
+
+    // 4. Try signup if user does not exist yet
+    var signupResponse = await getSignupResponse(
+      "Customer",
+      phone,
+      "12345678",
+      "12345678",
+      "phone",
+      tempUserId: temp_user_id.$,
+    );
+
+    if (signupResponse.result == true && signupResponse.access_token != null && signupResponse.access_token!.isNotEmpty) {
+      return signupResponse;
+    }
+
+    // Return clean error message if all fail
+    String cleanMessage = getErrorMessage(signupResponse.message);
+    if (cleanMessage.isEmpty || cleanMessage == "null") {
+      cleanMessage = getErrorMessage(loginResponse.message);
+    }
+
+    return LoginResponse(
+      result: false,
+      message: cleanMessage.isNotEmpty ? cleanMessage : "Authentication failed. Please try again.",
+    );
   }
 
   // Enhanced error handling method
   String getErrorMessage(dynamic error) {
+    if (error == null) return "An error occurred";
+    if (error is List) {
+      return error.map((e) => e.toString().replaceAll(RegExp(r'[\[\]]'), '')).join("\n").trim();
+    }
     if (error is Map<String, dynamic>) {
       if (error['message'] is List) {
         List<dynamic> messages = error['message'];
-        return messages.isNotEmpty ? messages.first.toString() : 'Unknown error occurred';
+        return messages.isNotEmpty ? messages.first.toString().replaceAll(RegExp(r'[\[\]]'), '') : 'Unknown error occurred';
       } else if (error['message'] is String) {
-        return error['message'];
+        return error['message'].toString().replaceAll(RegExp(r'[\[\]]'), '');
       }
     }
-    
-    String message = error.toString();
-    
+
+    String message = error.toString().replaceAll(RegExp(r'[\[\]]'), '').trim();
+
     // Handle common error patterns
     if (message.contains('matrix')) {
       return 'Authentication error. Please try again.';
@@ -408,7 +450,7 @@ class AuthRepository {
     } else if (message.contains('timeout')) {
       return 'Request timeout. Please try again.';
     }
-    
+
     return message;
   }
 }

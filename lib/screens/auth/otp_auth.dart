@@ -291,7 +291,7 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
         if (loginResponse.result != true) {
           String errMsg = "Login failed. Please try again.";
           if (loginResponse.message != null) {
-            errMsg = loginResponse.message.toString();
+            errMsg = AuthRepository().getErrorMessage(loginResponse.message);
           }
           ToastComponent.showDialog(errMsg);
         } else if (loginResponse.access_token == null || loginResponse.access_token!.isEmpty) {

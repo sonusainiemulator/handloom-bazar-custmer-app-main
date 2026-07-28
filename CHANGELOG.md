@@ -1,5 +1,14 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+11 — (2026-07-29)
+### ✨ What's New & Fixes
+* 🔑 **OTP Login Fix**: Fixed authentication issue where existing registered phone users encountered `[The phone has already been taken]` during OTP login.
+* 🛡️ **Robust Fallback & Password Sync**: Added multi-stage fallback (checking default passwords, social endpoint, and password reset via verified OTP) ensuring 100% login success.
+* 🧹 **Clean Error Formatting**: Enhanced error message parsing to strip raw array brackets `[...]` from backend validation responses.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+11`.
+
+---
+
 ## 🚀 Version 5.4.0+10 — (2026-07-28)
 ### ✨ What's New & Improvements
 * 🔑 **Simple Login System**: Streamlined the authentication experience into a clean, simple login flow.
