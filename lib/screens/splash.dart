@@ -7,6 +7,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:intl/intl.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -64,7 +65,7 @@ class _SplashState extends State<Splash> {
 
       //navigateAfterFuture: loadFromFuture(), //uncomment this
       title: Text(
-        "V ${_packageInfo.version}+${_packageInfo.buildNumber} (${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')} ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')})",
+        "V ${_packageInfo.version}+${_packageInfo.buildNumber} (${DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())})",
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 12.0, color: Colors.white),
       ),

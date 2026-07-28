@@ -14,6 +14,8 @@ import 'package:active_ecommerce_cms_demo_app/screens/address.dart';
 import 'package:flutter/material.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/app_localizations.dart';
 
+import 'package:intl/intl.dart';
+
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
@@ -92,7 +94,7 @@ class _SettingsState extends State<Settings> {
           ),
           SizedBox(height: 4),
           Text(
-            "Build Date & Time: ${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')} ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}",
+            "Build Date & Time: ${DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())}",
             style: TextStyle(fontSize: 11, color: MyTheme.grey_153),
           ),
         ],
