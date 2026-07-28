@@ -11,11 +11,7 @@ class BusinessSettingHelper {
       switch (element.type) {
         case 'facebook_login':
           {
-            if (element.value.toString() == "1") {
-              allow_facebook_login.$ = true;
-            } else {
-              allow_facebook_login.$ = false;
-            }
+            allow_facebook_login.$ = false;
           }
           break;
         case 'google_login':
@@ -29,11 +25,7 @@ class BusinessSettingHelper {
           break;
         case 'twitter_login':
           {
-            if (element.value.toString() == "1") {
-              allow_twitter_login.$ = true;
-            } else {
-              allow_twitter_login.$ = false;
-            }
+            allow_twitter_login.$ = false;
           }
           break;
         case 'apple_login':

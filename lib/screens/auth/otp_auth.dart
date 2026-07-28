@@ -334,71 +334,10 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
 
   // Section 1: Phone Request & Form
   Widget buildRequestFormBody(double screenWidth) {
+    _isRegisterMode = false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Tab Selector for Login/Registration Mode
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: Container(
-            width: screenWidth * 0.7,
-            height: 40,
-            decoration: BoxDecoration(
-              color: MyTheme.light_grey,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isRegisterMode = false;
-                      });
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: !_isRegisterMode ? MyTheme.accent_color : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "OTP Login",
-                        style: TextStyle(
-                          color: !_isRegisterMode ? Colors.white : MyTheme.font_grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isRegisterMode = true;
-                      });
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: _isRegisterMode ? MyTheme.accent_color : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "OTP Register",
-                        style: TextStyle(
-                          color: _isRegisterMode ? Colors.white : MyTheme.font_grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
 
         // Form Fields Container
         Padding(

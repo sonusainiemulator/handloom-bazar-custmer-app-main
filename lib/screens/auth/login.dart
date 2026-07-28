@@ -661,7 +661,7 @@ class _LoginState extends State<Login> {
                     ),
                     icon: Icon(Icons.phonelink_ring_rounded, size: 18, color: MyTheme.accent_color),
                     label: const Text(
-                      "Login / Register with OTP",
+                      "Login with OTP",
                       style: TextStyle(
                         color: MyTheme.accent_color,
                         fontSize: 14,
@@ -681,70 +681,8 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              // Divider/OR Text
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 12),
-                child: Row(
-                  children: [
-                    Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.login_screen_or_create_new_account,
-                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
-                  ],
-                ),
-              ),
-              // Clean Sign Up Button
-              SizedBox(
-                height: 46,
-                width: double.infinity,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: MyTheme.accent_color.withOpacity(0.06),
-                    side: BorderSide(color: MyTheme.accent_color.withOpacity(0.3), width: 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.login_screen_sign_up,
-                    style: TextStyle(
-                      color: MyTheme.accent_color,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return Registration();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              // Apple Sign-In visible on iOS only; skip Platform check on web to avoid errors
-              if (Theme.of(context).platform == TargetPlatform.iOS)
+              if (allow_google_login.$)
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: SignInWithAppleButton(
-                    onPressed: () async {
-                      signInWithApple();
-                    },
-                  ),
-                ),
-              Visibility(
-                visible: allow_google_login.$ || allow_facebook_login.$,
-                child: Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Center(
                     child: Text(
@@ -753,73 +691,21 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: Center(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Visibility(
-                          visible: allow_google_login.$,
-                          child: InkWell(
-                            onTap: () {
-                              onPressedGoogleLogin();
-                            },
-                            child: SizedBox(
-                              width: 28,
-                              child: Image.asset("assets/google_logo.png"),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15.0),
-                          child: Visibility(
-                            visible: allow_facebook_login.$,
-                            child: InkWell(
-                              onTap: () {
-                                onPressedFacebookLogin();
-                              },
-                              child: SizedBox(
-                                width: 28,
-                                child: Image.asset("assets/facebook_logo.png"),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (allow_twitter_login.$)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            child: InkWell(
-                              onTap: () {
-                                // onPressedTwitterLogin();
-                              },
-                              child: SizedBox(
-                                width: 28,
-                                child: Image.asset("assets/twitter_logo.png"),
-                              ),
-                            ),
-                          ),
-                        /* if (Platform.isIOS)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            // visible: true,
-                            child: A(
-                              onTap: () async {
-                                signInWithApple();
-                              },
-                              child: Container(
-                                width: 28,
-                                child: Image.asset("assets/apple_logo.png"),
-                              ),
-                            ),
-                          ),*/
-                      ],
+              if (allow_google_login.$)
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Center(
+                    child: InkWell(
+                      onTap: () {
+                        onPressedGoogleLogin();
+                      },
+                      child: SizedBox(
+                        width: 28,
+                        child: Image.asset("assets/google_logo.png"),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

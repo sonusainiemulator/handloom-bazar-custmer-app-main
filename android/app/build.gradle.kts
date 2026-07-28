@@ -1,5 +1,7 @@
 import java.util.Properties
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
 
 plugins {
     id("com.android.application")
@@ -93,7 +95,7 @@ android {
     applicationVariants.all {
         outputs.all {
             val outputImpl = this as? com.android.build.gradle.internal.api.ApkVariantOutputImpl
-            val formattedDate = java.text.SimpleDateFormat("yyyyMMdd-hhmm-a").format(java.util.Date())
+            val formattedDate = SimpleDateFormat("yyyyMMdd-hhmm-a").format(Date())
             if (name == "debug") {
                 outputImpl?.outputFileName = "handloombazar-user-app-v${defaultConfig.versionName}+${defaultConfig.versionCode}-${formattedDate}-debug.apk"
             } else {

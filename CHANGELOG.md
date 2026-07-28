@@ -1,6 +1,13 @@
 # 📋 CHANGELOG
 
-## 🚀 Version 5.4.0+9 — (2026-07-28)
+## 🚀 Version 5.4.0+10 — (2026-07-28)
+### ✨ What's New & Improvements
+* 🔑 **Simple Login System**: Streamlined the authentication experience into a clean, simple login flow.
+* 🚫 **Removed Social Logins**: Disabled and hid Facebook and Twitter login options across the app.
+* 🔒 **Registration Simplification**: Hidden registration options for a dedicated simple login interface.
+* 📦 **Version Bump**: Upgraded application version to `5.4.0+10`.
+
+---
 ### ✨ What's New & Improvements
 * 🔑 **OTP Testing & Debugging**: Added test OTP fallback (`123456`) in `BulkSmsPlansService` and console logging for seamless verification when SMS gateway is unavailable.
 * 📦 **Version Bump**: Updated application build version to `5.4.0+9`.
