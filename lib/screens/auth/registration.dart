@@ -92,11 +92,12 @@ class _RegistrationState extends State<Registration> {
     } else if (_register_by == 'email' && (email == "" || !isEmail(email))) {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_email);
       return;
-    } else if (_register_by == 'phone' && _phone == "") {
-      ToastComponent.showDialog(
-        AppLocalizations.of(context)!.enter_phone_number,
-      );
-      return;
+    } else if (_register_by == 'phone') {
+      String rawDigits = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+      if (_phone == "" || rawDigits.length != 10) {
+        ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
+        return;
+      }
     } else if (password == "") {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_password);
       return;
@@ -407,6 +408,7 @@ class _RegistrationState extends State<Registration> {
                         height: 36,
                         child: CustomInternationalPhoneNumberInput(
                           countries: countries_code,
+                          maxLength: 10,
                           onInputChanged: (PhoneNumber number) {
                             print(number.phoneNumber);
                             setState(() {
