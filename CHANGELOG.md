@@ -1,5 +1,12 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+12 — (2026-07-29)
+### ✨ What's New & Fixes
+* 📦 **Dependency Fix**: Resolved `intl` dependency version conflict with `flutter_localizations` SDK package by updating the constraint range to `>=0.19.0 <0.21.0`.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+12`.
+
+---
+
 ## 🚀 Version 5.4.0+11 — (2026-07-29)
 ### ✨ What's New & Fixes
 * 🔑 **OTP Login Fix**: Fixed authentication issue where existing registered phone users encountered `[The phone has already been taken]` during OTP login.
