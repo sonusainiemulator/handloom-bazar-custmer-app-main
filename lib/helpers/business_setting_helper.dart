@@ -16,11 +16,7 @@ class BusinessSettingHelper {
           break;
         case 'google_login':
           {
-            if (element.value.toString() == "1") {
-              allow_google_login.$ = true;
-            } else {
-              allow_google_login.$ = false;
-            }
+            allow_google_login.$ = false;
           }
           break;
         case 'twitter_login':
@@ -30,11 +26,7 @@ class BusinessSettingHelper {
           break;
         case 'apple_login':
           {
-            if (element.value.toString() == "1") {
-              allow_apple_login.$ = true;
-            } else {
-              allow_apple_login.$ = false;
-            }
+            allow_apple_login.$ = false;
           }
           break;
         case 'pickup_point':

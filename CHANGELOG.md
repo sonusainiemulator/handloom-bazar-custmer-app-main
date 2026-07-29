@@ -1,5 +1,21 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+14 — (2026-07-29)
+### ✨ What's New & Improvements
+* 📱 **Mobile OTP Authentication Exclusive**: Streamlined authentication screen to exclusively display Mobile Number entry & **Login / Register with OTP** button.
+* 🙈 **UI Simplification**: Hidden Email field, Password field, Forgot Password link, standard login button, signup button, and social media login icons.
+* ⚡ **Seamless Auto-OTP**: Tapping **Login / Register with OTP** passes mobile number and triggers instant OTP dispatch and verification.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+14`.
+
+---
+
+## 🚀 Version 5.4.0+13 — (2026-07-29)
+### ✨ What's New & Fixes
+* 🚫 **Disabled Social Media**: Completely disabled all social media login options (Google, Facebook, Twitter, Apple) across the entire application and settings.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+13`.
+
+---
+
 ## 🚀 Version 5.4.0+12 — (2026-07-29)
 ### ✨ What's New & Fixes
 * 📦 **Dependency Fix**: Resolved `intl` dependency version conflict with `flutter_localizations` SDK package by updating the constraint range to `>=0.19.0 <0.21.0`.

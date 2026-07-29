@@ -20,8 +20,9 @@ import 'package:smart_auth/smart_auth.dart';
 
 class OtpAuth extends StatefulWidget {
   final bool initialIsRegister;
+  final String? initialPhone;
 
-  const OtpAuth({super.key, this.initialIsRegister = false});
+  const OtpAuth({super.key, this.initialIsRegister = false, this.initialPhone});
 
   @override
   _OtpAuthState createState() => _OtpAuthState();
@@ -67,6 +68,17 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
     super.initState();
     _isRegisterMode = widget.initialIsRegister;
     _logAppSignature();
+
+    if (widget.initialPhone != null && widget.initialPhone!.isNotEmpty) {
+      _phoneComplete = widget.initialPhone;
+      String digits = widget.initialPhone!.replaceAll(RegExp(r'\D'), '');
+      if (digits.length >= 10) {
+        _phoneNumberController.text = digits.substring(digits.length - 10);
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _sendOtpRequest();
+      });
+    }
   }
 
   /// Fetches the app signature hash needed for SMS Retriever API.

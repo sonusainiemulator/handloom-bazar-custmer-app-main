@@ -427,12 +427,11 @@ class _LoginState extends State<Login> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Phone Field Header
               Padding(
                 padding: const EdgeInsets.only(bottom: 6.0),
                 child: Text(
-                  _login_by == "email"
-                      ? AppLocalizations.of(context)!.email_ucf
-                      : AppLocalizations.of(context)!.login_screen_phone,
+                  AppLocalizations.of(context)!.login_screen_phone,
                   style: TextStyle(
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w600,
@@ -440,272 +439,87 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              if (_login_by == "email")
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        height: 44,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: Colors.grey.shade300, width: 1.0),
-                        ),
-                        child: TextField(
-                          controller: _emailController,
-                          autofocus: false,
-                          style: const TextStyle(fontSize: 14),
-                          decoration: InputDecorations.buildInputDecoration_1(
-                            hint_text: "johndoe@example.com",
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      otp_addon_installed.$
-                          ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _login_by = "phone";
-                              });
-                            },
-                            child: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!.or_login_with_a_phone,
-                              style: TextStyle(
-                                color: MyTheme.accent_color,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          )
-                          : Container(),
-                    ],
+              // Phone Field Input
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Container(
+                  height: 44,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.grey.shade300, width: 1.0),
                   ),
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        height: 44,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                  child: CustomInternationalPhoneNumberInput(
+                    countries: countries_code,
+                    maxLength: 10,
+                    onInputChanged: (PhoneNumber number) {
+                      setState(() {
+                        _phone = number.phoneNumber;
+                      });
+                    },
+                    selectorConfig: const SelectorConfig(
+                      selectorType: PhoneInputSelectorType.DIALOG,
+                    ),
+                    initialValue: PhoneNumber(
+                      isoCode: 'IN',
+                      dialCode: '+91',
+                    ),
+                    ignoreBlank: false,
+                    autoValidateMode: AutovalidateMode.disabled,
+                    selectorTextStyle: TextStyle(
+                      color: MyTheme.font_grey,
+                    ),
+                    textStyle: TextStyle(color: MyTheme.font_grey),
+                    textFieldController: _phoneNumberController,
+                    formatInput: true,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      signed: true,
+                      decimal: true,
+                    ),
+                    inputDecoration:
+                        InputDecorations.buildInputDecoration_phone(
+                          hint_text: "98765 43210",
                         ),
-                        child: CustomInternationalPhoneNumberInput(
-                          countries: countries_code,
-                          maxLength: 10,
-                          onInputChanged: (PhoneNumber number) {
-                            print(number.phoneNumber);
-                            setState(() {
-                              _phone = number.phoneNumber;
-                            });
-                          },
-                          onInputValidated: (bool value) {
-                            print(value);
-                          },
-                          selectorConfig: const SelectorConfig(
-                            selectorType: PhoneInputSelectorType.DIALOG,
-                          ),
-                          initialValue: PhoneNumber(
-                            isoCode: 'IN',
-                            dialCode: '+91',
-                          ),
-                          ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.disabled,
-                          selectorTextStyle: TextStyle(
-                            color: MyTheme.font_grey,
-                          ),
-                          textStyle: TextStyle(color: MyTheme.font_grey),
-                          textFieldController: _phoneNumberController,
-                          formatInput: true,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: true,
-                            decimal: true,
-                          ),
-                          inputDecoration:
-                              InputDecorations.buildInputDecoration_phone(
-                                hint_text: "01XXX XXX XXX",
-                              ),
-                          onSaved: (PhoneNumber number) {
-                            print('On Saved: $number');
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _login_by = "email";
-                          });
+                  ),
+                ),
+              ),
+              // Prominent Login / Register with OTP Button
+              SizedBox(
+                height: 48,
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: MyTheme.accent_color,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  icon: const Icon(Icons.phonelink_ring_rounded, size: 20, color: Colors.white),
+                  label: const Text(
+                    "Login / Register with OTP",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    String rawDigits = _phoneNumberController.text.replaceAll(RegExp(r'\D'), '');
+                    if (_phone == null || _phone!.isEmpty || rawDigits.length != 10) {
+                      ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return OtpAuth(initialPhone: _phone);
                         },
-                        child: Text(
-                          AppLocalizations.of(context)!.or_login_with_an_email,
-                          style: TextStyle(
-                            color: MyTheme.accent_color,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
                       ),
-                    ],
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6.0),
-                child: Text(
-                  AppLocalizations.of(context)!.password_ucf,
-                  style: TextStyle(
-                    color: MyTheme.accent_color,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
+                    );
+                  },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 44,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(color: Colors.grey.shade300, width: 1.0),
-                      ),
-                      child: TextField(
-                        controller: _passwordController,
-                        autofocus: false,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "••••••••",
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PasswordForget();
-                            },
-                          ),
-                        );
-                      },
-                      child: Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.login_screen_forgot_password,
-                        style: TextStyle(
-                          color: MyTheme.accent_color,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Main Log In Button
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: SizedBox(
-                  height: 46,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MyTheme.accent_color,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.login_screen_log_in,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onPressed: () {
-                      onPressedLogin(context);
-                    },
-                  ),
-                ),
-              ),
-              // OTP Login Option
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: SizedBox(
-                  height: 46,
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: MyTheme.accent_color, width: 1.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                    icon: Icon(Icons.phonelink_ring_rounded, size: 18, color: MyTheme.accent_color),
-                    label: const Text(
-                      "Login with OTP",
-                      style: TextStyle(
-                        color: MyTheme.accent_color,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return OtpAuth(initialIsRegister: false);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              if (allow_google_login.$)
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.login_screen_login_with,
-                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
-                    ),
-                  ),
-                ),
-              if (allow_google_login.$)
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Center(
-                    child: InkWell(
-                      onTap: () {
-                        onPressedGoogleLogin();
-                      },
-                      child: SizedBox(
-                        width: 28,
-                        child: Image.asset("assets/google_logo.png"),
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
