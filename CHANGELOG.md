@@ -1,5 +1,12 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+16 — (2026-07-29)
+### ✨ What's New & Improvements
+* 🔑 **Password & Confirm Password Display Restored**: Re-enabled and restored Password & Confirm Password input fields during account registration and OTP sign-up.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+16`.
+
+---
+
 ## 🚀 Version 5.4.0+15 — (2026-07-29)
 ### ✨ What's New & Improvements
 * 🔑 **Hidden Password Fields for Mobile Registration**: Hidden Password & Confirm Password input fields during mobile registration/OTP sign-up.

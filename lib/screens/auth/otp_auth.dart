@@ -197,8 +197,16 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
         return;
       }
       if (_passwordController.text.isEmpty) {
-        _passwordController.text = "12345678";
-        _passwordConfirmController.text = "12345678";
+        ToastComponent.showDialog("Please enter password");
+        return;
+      }
+      if (_passwordController.text.length < 6) {
+        ToastComponent.showDialog("Password must be at least 6 characters");
+        return;
+      }
+      if (_passwordController.text != _passwordConfirmController.text) {
+        ToastComponent.showDialog("Passwords do not match");
+        return;
       }
     }
 
@@ -410,6 +418,48 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
                 ),
               ),
               const SizedBox(height: 12),
+
+              // Register Password Fields
+              if (_isRegisterMode) ...[
+                Text(
+                  "Password",
+                  style: TextStyle(
+                    color: MyTheme.accent_color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                SizedBox(
+                  height: 38,
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecorations.buildInputDecoration_1(
+                      hint_text: "••••••",
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Confirm Password",
+                  style: TextStyle(
+                    color: MyTheme.accent_color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                SizedBox(
+                  height: 38,
+                  child: TextField(
+                    controller: _passwordConfirmController,
+                    obscureText: true,
+                    decoration: InputDecorations.buildInputDecoration_1(
+                      hint_text: "••••••",
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
 
               const SizedBox(height: 16),
 
