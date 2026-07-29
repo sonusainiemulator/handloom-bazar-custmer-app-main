@@ -1,5 +1,13 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+15 — (2026-07-29)
+### ✨ What's New & Improvements
+* 🔑 **Hidden Password Fields for Mobile Registration**: Hidden Password & Confirm Password input fields during mobile registration/OTP sign-up.
+* ⚡ **Seamless Background Registration**: Automatically handles secure default credentials for mobile OTP registration, eliminating manual password entry.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+15`.
+
+---
+
 ## 🚀 Version 5.4.0+14 — (2026-07-29)
 ### ✨ What's New & Improvements
 * 📱 **Mobile OTP Authentication Exclusive**: Streamlined authentication screen to exclusively display Mobile Number entry & **Login / Register with OTP** button.

@@ -98,6 +98,10 @@ class _RegistrationState extends State<Registration> {
         ToastComponent.showDialog("Please enter a valid 10-digit mobile number");
         return;
       }
+      if (_passwordController.text.isEmpty) {
+        _passwordController.text = "12345678";
+        _passwordConfirmController.text = "12345678";
+      }
     } else if (password == "") {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_password);
       return;
@@ -515,72 +519,74 @@ class _RegistrationState extends State<Registration> {
                     ],
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.password_ucf,
-                  style: TextStyle(
-                    color: MyTheme.accent_color,
-                    fontWeight: FontWeight.w600,
+              if (_register_by != 'phone') ...[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.password_ucf,
+                    style: TextStyle(
+                      color: MyTheme.accent_color,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      height: 36,
-                      child: TextField(
-                        controller: _passwordController,
-                        autofocus: false,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecorations.buildInputDecoration_1(
-                          hint_text: "* * * * * * * *",
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        height: 36,
+                        child: TextField(
+                          controller: _passwordController,
+                          autofocus: false,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          decoration: InputDecorations.buildInputDecoration_1(
+                            hint_text: "* * * * * * * *",
+                          ),
                         ),
                       ),
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.password_must_contain_at_least_6_characters,
+                        style: TextStyle(
+                          color: MyTheme.textfield_grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.retype_password_ucf,
+                    style: TextStyle(
+                      color: MyTheme.accent_color,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.password_must_contain_at_least_6_characters,
-                      style: TextStyle(
-                        color: MyTheme.textfield_grey,
-                        fontStyle: FontStyle.italic,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: SizedBox(
+                    height: 36,
+                    child: TextField(
+                      controller: _passwordConfirmController,
+                      autofocus: false,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      decoration: InputDecorations.buildInputDecoration_1(
+                        hint_text: "* * * * * * * *",
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.retype_password_ucf,
-                  style: TextStyle(
-                    color: MyTheme.accent_color,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: SizedBox(
-                  height: 36,
-                  child: TextField(
-                    controller: _passwordConfirmController,
-                    autofocus: false,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                      hint_text: "* * * * * * * *",
-                    ),
-                  ),
-                ),
-              ),
+              ],
               if (google_recaptcha.$)
                 SizedBox(
                   height: _isCaptchaShowing ? 350 : 50,
