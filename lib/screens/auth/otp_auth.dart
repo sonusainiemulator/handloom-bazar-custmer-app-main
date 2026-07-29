@@ -388,8 +388,12 @@ class _OtpAuthState extends State<OtpAuth> with CodeAutoFill {
                 ),
               ),
               const SizedBox(height: 4),
-              SizedBox(
-                height: 38,
+              Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: MyTheme.accent_color.withOpacity(0.6), width: 1.2),
+                ),
                 child: CustomInternationalPhoneNumberInput(
                   countries: const ['IN'],
                   initialValue: PhoneNumber(isoCode: 'IN', dialCode: '+91'),

@@ -404,8 +404,12 @@ class _RegistrationState extends State<Registration> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 36,
+                      Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(color: MyTheme.accent_color.withOpacity(0.6), width: 1.2),
+                        ),
                         child: CustomInternationalPhoneNumberInput(
                           countries: countries_code,
                           maxLength: 10,
@@ -430,8 +434,6 @@ class _RegistrationState extends State<Registration> {
                           selectorTextStyle: TextStyle(
                             color: MyTheme.font_grey,
                           ),
-                          // initialValue: PhoneNumber(
-                          //     isoCode: countries_code[0].toString()),
                           textFieldController: _phoneNumberController,
                           formatInput: true,
                           keyboardType: TextInputType.numberWithOptions(
@@ -440,7 +442,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           inputDecoration:
                               InputDecorations.buildInputDecoration_phone(
-                                hint_text: "01XXX XXX XXX",
+                                hint_text: "98765 43210",
                               ),
                           onSaved: (PhoneNumber number) {
                             //print('On Saved: $number');

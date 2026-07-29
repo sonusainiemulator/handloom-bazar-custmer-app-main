@@ -7,37 +7,37 @@ class InputDecorations {
         hintText: hint_text,
         filled: true,
         fillColor: MyTheme.white,
-        hintStyle: TextStyle(fontSize: 12.0, color: Color(0xffA8AFB3)),
+        hintStyle: const TextStyle(fontSize: 12.0, color: Color(0xffA8AFB3)),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyTheme.noColor, width: 0.2),
+          borderSide: BorderSide(color: MyTheme.accent_color.withOpacity(0.6), width: 1.2),
           borderRadius: const BorderRadius.all(
-            Radius.circular(6.0),
+            Radius.circular(8.0),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyTheme.accent_color, width: 0.5),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(6.0),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: MyTheme.accent_color, width: 1.8),
+          borderRadius: BorderRadius.all(
+            Radius.circular(8.0),
           ),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 14.0));
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0));
   }
 
   static InputDecoration buildInputDecoration_phone({hint_text = ""}) {
     return InputDecoration(
         hintText: hint_text,
-        hintStyle: TextStyle(fontSize: 12.0, color: MyTheme.textfield_grey),
+        hintStyle: const TextStyle(fontSize: 12.0, color: MyTheme.textfield_grey),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyTheme.textfield_grey, width: 0.5),
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(6.0),
-              bottomRight: Radius.circular(6.0)),
+          borderSide: BorderSide(color: MyTheme.accent_color.withOpacity(0.6), width: 1.2),
+          borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(8.0),
+              bottomRight: Radius.circular(8.0)),
         ),
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: MyTheme.accent_color, width: 0.5),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: MyTheme.accent_color, width: 1.8),
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(6.0),
-                bottomRight: Radius.circular(6.0))),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0));
+                topRight: Radius.circular(8.0),
+                bottomRight: Radius.circular(8.0))),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0));
   }
 }

@@ -446,7 +446,7 @@ class _LoginState extends State<Login> {
                   height: 44,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                    border: Border.all(color: MyTheme.accent_color.withOpacity(0.6), width: 1.2),
                   ),
                   child: CustomInternationalPhoneNumberInput(
                     countries: countries_code,

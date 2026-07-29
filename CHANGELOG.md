@@ -1,5 +1,12 @@
 # 📋 CHANGELOG
 
+## 🚀 Version 5.4.0+17 — (2026-07-29)
+### ✨ What's New & Improvements
+* 🎨 **Enhanced Input Field Borders**: Added distinct, stylish borders to all login and registration text fields & phone input containers across the app.
+* 📦 **Version Bump**: Incremented application version to `5.4.0+17`.
+
+---
+
 ## 🚀 Version 5.4.0+16 — (2026-07-29)
 ### ✨ What's New & Improvements
 * 🔑 **Password & Confirm Password Display Restored**: Re-enabled and restored Password & Confirm Password input fields during account registration and OTP sign-up.
