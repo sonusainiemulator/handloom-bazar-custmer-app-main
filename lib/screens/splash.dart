@@ -66,7 +66,7 @@ class _SplashState extends State<Splash> {
       title: Text(
         "V ${_packageInfo.version}",
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.white),
+            fontWeight: FontWeight.bold, fontSize: 14.0, color: MyTheme.dark_font_grey),
       ),
       useLoader: false,
       loadingText: Text(
@@ -74,14 +74,14 @@ class _SplashState extends State<Splash> {
         style: TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: 13.0,
-          color: Colors.white,
+          color: MyTheme.dark_font_grey,
         ),
       ),
       image: Image.asset("assets/splash_screen_logo.png"),
       backgroundImage:
           Image.asset("assets/splash_login_registration_background_image.png"),
       backgroundColor: MyTheme.splash_screen_color,
-      photoSize: 60.0,
+      photoSize: 110.0,
       backgroundPhotoSize: 140.0,
     );
   }
@@ -332,7 +332,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                       width: 100,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: MyTheme.dark_font_grey,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: widget.image,

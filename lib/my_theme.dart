@@ -5,11 +5,11 @@ ThemeData lightMode = ThemeData();
 class MyTheme {
   /*configurable colors stars*/
   static Color mainColor = Color(0xffF2F1F6);
-  static const Color accent_color = Color(0xffe608c0); // Pink color #e608c0
+  static const Color accent_color = Color(0xffE21221); // Handloom Bazar Logo Red #E21221
   static const Color accent_color_shadow =
-      Color.fromRGBO(230, 8, 192, .40); // Pink shadow
-  static Color soft_accent_color = Color.fromRGBO(252, 228, 246, 1); // Light pink
-  static Color splash_screen_color = Color(0xffe608c0); // Pink splash screen #e608c0
+      Color.fromRGBO(226, 18, 33, .40); // Logo Red shadow
+  static Color soft_accent_color = Color.fromRGBO(255, 235, 238, 1); // Soft Red
+  static Color splash_screen_color = Colors.white; // Logo Red splash screen
   /*configurable colors ends*/
   /*If you are not a developer, do not change the bottom colors*/
   static const Color white = Color.fromRGBO(255, 255, 255, 1);

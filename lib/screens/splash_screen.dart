@@ -60,9 +60,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 Hero(
                   tag: "splashscreenImage",
                   child: Container(
-                    height: 180,
-                    width: 180,
-                    padding: EdgeInsets.all(12),
+                    height: 240,
+                    width: 240,
+                    padding: EdgeInsets.all(0),
                     decoration: BoxDecoration(
                       color: MyTheme.white,
                       borderRadius: BorderRadius.circular(24),
@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
-                    color: Colors.white,
+                    color: MyTheme.dark_font_grey,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.0,
-                    color: Colors.white,
+                    color: MyTheme.dark_font_grey,
                   ),
                 ),
               ],
@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 13.0,
-                color: Colors.white,
+                color: MyTheme.dark_font_grey,
               ),
             ),
           ),
