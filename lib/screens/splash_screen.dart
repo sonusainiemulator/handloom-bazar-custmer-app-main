@@ -59,26 +59,12 @@ class _SplashScreenState extends State<SplashScreen> {
                 // Logo with white rounded background
                 Hero(
                   tag: "splashscreenImage",
-                  child: Container(
-                    height: 240,
-                    width: 240,
-                    padding: EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      color: MyTheme.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 12,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Image.asset(
-                      "assets/splash_screen_logo.png",
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
-                    ),
+                  child: Image.asset(
+                    "assets/app_logo.png",
+                    height: 260,
+                    width: 260,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
                   ),
                 ),
                 SizedBox(height: 16),
@@ -88,7 +74,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
-                    color: MyTheme.dark_font_grey,
+                    color: MyTheme.accent_color,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 SizedBox(height: 8),
