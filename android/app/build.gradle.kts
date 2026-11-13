@@ -56,6 +56,8 @@ android {
                     File(rootDir, configuredStoreFile.path)
                 }
                 storePassword = keystoreProperties["storePassword"] as String
+                enableV1Signing = true
+                enableV2Signing = true
             }
         }
     }
