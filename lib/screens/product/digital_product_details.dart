@@ -1220,7 +1220,8 @@ class _DigitalProductDetailsState extends State<DigitalProductDetails>
                         ),
                         InkWell(
                           onTap: () {
-                            if (_productDetails!.video_link == "") {
+                            if (_productDetails!.video_link == null ||
+                                _productDetails!.video_link!.trim().isEmpty) {
                               ToastComponent.showDialog(
                                 AppLocalizations.of(context)!
                                     .video_not_available,

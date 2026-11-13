@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.4.0+14] — 2026-11-13
+
+### Video Player & Product Details Enhancements
+- **Enhanced Product Video Renderer**: Replaced raw WebView URL loading in `VideoDescription` with responsive embed container for YouTube, Vimeo, Dailymotion, and HTML5 video files.
+- **YouTube Embedding Support**: Parses YouTube standard watch links, share links (`youtu.be`), embed links, and Shorts to embed them using `youtube-nocookie.com` with `allowfullscreen`, `autoplay`, and `playsinline` parameters, bypassing YouTube's `X-Frame-Options: SAMEORIGIN` block.
+- **External Video Fallback**: Added a direct button and intent handling to open videos in the native YouTube app or external web browser if embedding fails.
+- **Null Safety in Product Video Checks**: Fixed null/empty check in `product_details.dart`, `digital_product_details.dart`, and `auction_products_details.dart`.
+
 ## [5.4.0+13] — 2026-11-13
 
 ### UI & Branding Enhancements

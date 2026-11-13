@@ -821,7 +821,8 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails>
                         divider(),
                         InkWell(
                           onTap: () {
-                            if (_auctionproductDetails.videoLink == "") {
+                            if (_auctionproductDetails.videoLink == null ||
+                                _auctionproductDetails.videoLink!.trim().isEmpty) {
                               ToastComponent.showDialog(
                                 AppLocalizations.of(context)!
                                     .video_not_available,
