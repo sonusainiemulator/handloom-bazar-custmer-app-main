@@ -20,7 +20,7 @@ val hasReleaseKeystore = keystoreProperties.isNotEmpty()
 android {
     namespace = "com.handloombazar.shop"
     compileSdk = 36
-    ndkVersion = "28.0.13004108"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         // Enable core library desugaring and align with plugin Java target.
@@ -70,18 +70,17 @@ android {
                 logger.warn("Release keystore not found. Falling back to the debug signing key for local installs.")
                 signingConfigs.getByName("debug")
             }
-            // Completely disable obfuscation to prevent crashes
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // Enable R8 / ProGuard code shrinking & obfuscation for Google Play compliance (>25% threshold)
+            isMinifyEnabled = true
+            isShrinkResources = true
             isDebuggable = false
             isJniDebuggable = false
             isRenderscriptDebuggable = false
 
-            // Remove proguard files to prevent any obfuscation
-            // proguardFiles(
-            //     getDefaultProguardFile("proguard-android-optimize.txt"),
-            //     "proguard-rules.pro"
-            // )
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         debug {
             isMinifyEnabled = false

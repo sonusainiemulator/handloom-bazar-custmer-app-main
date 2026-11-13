@@ -14,6 +14,7 @@
         <domain includeSubdomains="true">googleapis.com</domain>
         <domain includeSubdomains="true">google.com</domain>
         <domain includeSubdomains="true">gstatic.com</domain>
+        <domain includeSubdomains="true">handloombazar.co.in</domain>
         <domain includeSubdomains="true">thepriyafashion.com</domain>
     </domain-config>
 </network-security-config>

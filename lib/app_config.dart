@@ -22,7 +22,7 @@ class AppConfig {
   static const bool HTTPS =
       true; //if you are using localhost , set this to false
   static const DOMAIN_PATH =
-      "handloombazar.co.in"; //use only domain name without http:// or https://www.
+      "www.handloombazar.co.in"; //use only domain name without http:// or https://www.
 
   //do not configure these below
   static const String API_ENDPATH = "api/v2";

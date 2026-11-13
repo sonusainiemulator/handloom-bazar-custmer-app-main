@@ -293,7 +293,7 @@ class _FirebaseOtpVerificationState extends State<FirebaseOtpVerification> {
                     keyboardType: const TextInputType.numberWithOptions(
                         signed: true, decimal: true),
                     inputDecoration:
-                        InputDecorations.buildInputDecoration_phone_number(
+                        InputDecorations.buildInputDecoration_phone(
                             hint_text: "01XXX XXX XXX"),
                     onSaved: (PhoneNumber number) {
                       phoneNumberComplete = number.phoneNumber ?? "";
@@ -302,7 +302,7 @@ class _FirebaseOtpVerificationState extends State<FirebaseOtpVerification> {
                 ),
                 const SizedBox(height: 30),
                 Btn.basic(
-                  min_width: MediaQuery.of(context).size.width,
+                  minWidth: MediaQuery.of(context).size.width,
                   color: MyTheme.accent_color,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6)),
@@ -417,7 +417,7 @@ class _FirebaseOtpVerificationState extends State<FirebaseOtpVerification> {
                 ),
                 const SizedBox(height: 30),
                 Btn.basic(
-                  min_width: MediaQuery.of(context).size.width,
+                  minWidth: MediaQuery.of(context).size.width,
                   color: MyTheme.accent_color,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6)),

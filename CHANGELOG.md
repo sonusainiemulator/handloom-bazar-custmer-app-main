@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0+12] — 2026-11-13
+
+### Bug Fixes
+- **Backend Redirect Fix (FormatException: <!DOCTYPE html>)**: Fixed base domain path in lib/app_config.dart from handloombazar.co.in to www.handloombazar.co.in to prevent LiteSpeed 301 HTML redirect responses that broke JSON parsing during OTP and authentication requests.
+- **Compilation Fixes**: Fixed undefined InputDecorations method and parameter names in lib/screens/auth/firebase_otp_verification.dart.
+- **Package Path Cleanup**: Moved MainActivity.kt to the matching com/handloombazar/shop package directory structure and updated network_security_config.xml.
+
 ## [5.4.0+9] — 2026-07-28
 
 ### Features & Updates
