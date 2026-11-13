@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0+13] — 2026-11-13
+
+### UI & Branding Enhancements
+- **Theme Color Overhaul**: Changed primary accent color across the app to the official Handloom Bazar Logo Red (`#E21221`), replacing the legacy pink theme.
+- **Splash Screen Redesign**: Clean pure white background with enlarged high-res logo (`260x260`) and red brand typography.
+- **V1 & V2 APK Signing**: Enabled both JAR (v1) and APK Signature Scheme v2 for maximum compatibility across all Android versions.
+
 ## [5.4.0+12] — 2026-11-13
 
 ### Bug Fixes
