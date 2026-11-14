@@ -78,11 +78,28 @@ All notable updates and version histories are documented in **[CHANGELOG.md](CHA
 
 ---
 
+## 🔑 Release Keystore & Signing Configuration
+
+> [!IMPORTANT]
+> The production release keystore file (`.jks`) is securely backed up in Google Drive for account **`socialttinfo`** (`socialttinfo@gmail.com`).
+> 
+> **Keystore Location**: Google Drive (`socialttinfo`) → `Handloom Bazar / Keystore / release.jks` (or configured `.jks` file).
+> 
+> To configure release signing locally on a new machine:
+> 1. Download the release keystore file from the Google Drive account **socialttinfo**.
+> 2. Place it in `android/` (or directory specified in `key.properties`).
+> 3. Verify `android/key.properties` contains:
+>    ```properties
+>    storeFile=<path_to_keystore.jks>
+>    storePassword=<password>
+>    keyAlias=<alias>
+>    keyPassword=<password>
+>    ```
+
+---
+
 ## 📄 License & Organization
 Maintained by **TTinfotechs** for **Handloom Bazar**.
-```bash
-flutter run
-```
 
 ## Build Configuration
 
