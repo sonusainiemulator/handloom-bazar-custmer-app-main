@@ -988,615 +988,512 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   buildTimeLineTiles() {
-    return SizedBox(
-      height: 200,
+    List<Map<String, dynamic>> steps = [
+      {
+        "title": AppLocalizations.of(context)!.order_placed,
+        "icon": Icons.receipt_long_rounded,
+        "activeColor": Colors.green,
+        "isDone": _stepIndex >= 0,
+        "isActive": _orderDetails!.delivery_status == "pending",
+      },
+      {
+        "title": AppLocalizations.of(context)!.confirmed_ucf,
+        "icon": Icons.verified_outlined,
+        "activeColor": Colors.blue,
+        "isDone": _stepIndex >= 1,
+        "isActive": _orderDetails!.delivery_status == "confirmed",
+      },
+      {
+        "title": AppLocalizations.of(context)!.on_the_way_ucf,
+        "icon": Icons.local_shipping_outlined,
+        "activeColor": Colors.amber.shade700,
+        "isDone": _stepIndex >= 2,
+        "isActive": _orderDetails!.delivery_status == "on_the_way" ||
+            _orderDetails!.delivery_status == "on_delivery" ||
+            _orderDetails!.delivery_status == "picked_up",
+      },
+      {
+        "title": AppLocalizations.of(context)!.delivered_ucf,
+        "icon": Icons.check_circle_outline_rounded,
+        "activeColor": Colors.purple,
+        "isDone": _stepIndex >= 5,
+        "isActive": _orderDetails!.delivery_status == "delivered",
+      },
+    ];
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecorations.buildBoxDecoration_1().copyWith(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TimelineTile(
-            axis: TimelineAxis.vertical,
-            alignment: TimelineAlign.end,
-            isFirst: true,
-            startChild: SizedBox(
-              height: 50,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width:
-                        _orderDetails!.delivery_status == "pending" ? 36 : 30,
-                    height:
-                        _orderDetails!.delivery_status == "pending" ? 36 : 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.redAccent, width: 2),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Row(
+              children: [
+                Icon(Icons.timeline_rounded, size: 18, color: MyTheme.accent_color),
+                SizedBox(width: 8),
+                Text(
+                  "Order Milestone Tracking",
+                  style: TextStyle(
+                    color: MyTheme.dark_font_grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...List.generate(steps.length, (index) {
+            final step = steps[index];
+            final bool isDone = step["isDone"] as bool;
+            final bool isActive = step["isActive"] as bool;
+            final bool isLast = index == steps.length - 1;
+            final Color stepColor = isDone ? (step["activeColor"] as Color) : MyTheme.grey_153;
 
-                      //shape: BoxShape.rectangle,
-                    ),
-                    child: Icon(
-                      Icons.list_alt,
-                      color: Colors.redAccent,
-                      size: 18,
-                    ),
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Milestone Icon and connecting line
+                  Column(
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isDone
+                              ? (stepColor).withOpacity(0.12)
+                              : MyTheme.light_grey.withOpacity(0.4),
+                          border: Border.all(
+                            color: isDone ? stepColor : MyTheme.medium_grey_50,
+                            width: isActive ? 2.5 : 1.5,
+                          ),
+                        ),
+                        child: Icon(
+                          step["icon"] as IconData,
+                          size: 18,
+                          color: isDone ? stepColor : MyTheme.grey_153,
+                        ),
+                      ),
+                      if (!isLast)
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              width: 2.5,
+                              margin: EdgeInsets.symmetric(vertical: 2),
+                              color: (_stepIndex > index)
+                                  ? stepColor
+                                  : MyTheme.medium_grey_50,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Container(
-                      height: 1.0,
-                      width: MediaQuery.of(context).size.width * .4,
-                      color: MyTheme.medium_grey_50,
+                  SizedBox(width: 14),
+                  // Milestone Title and status badge
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 6,
+                        bottom: isLast ? 6 : 22,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              step["title"] as String,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                                color: isDone
+                                    ? MyTheme.dark_font_grey
+                                    : MyTheme.grey_153,
+                              ),
+                            ),
+                          ),
+                          if (isDone)
+                            Container(
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green.shade50,
+                              ),
+                              child: Icon(
+                                Icons.check_circle_rounded,
+                                size: 18,
+                                color: Colors.green,
+                              ),
+                            )
+                          else
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: MyTheme.medium_grey_50,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  Text(
-                    AppLocalizations.of(context)!.order_placed,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: MyTheme.font_grey),
                   ),
                 ],
               ),
-            ),
-            indicatorStyle: IndicatorStyle(
-              color: _stepIndex >= 0 ? Colors.green : MyTheme.medium_grey,
-              padding: const EdgeInsets.only(left: 4),
-              iconStyle:
-                  _stepIndex >= 0
-                      ? IconStyle(
-                        color: Colors.white,
-                        iconData: Icons.check,
-                        fontSize: 16,
-                      )
-                      : null,
-            ),
-            afterLineStyle:
-                _stepIndex >= 1
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-          ),
-          TimelineTile(
-            axis: TimelineAxis.vertical,
-            alignment: TimelineAlign.end,
-            startChild: SizedBox(
-              height: 50,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width:
-                        _orderDetails!.delivery_status == "confirmed" ? 36 : 30,
-                    height:
-                        _orderDetails!.delivery_status == "confirmed" ? 36 : 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.blue, width: 2),
-
-                      //shape: BoxShape.rectangle,
-                    ),
-                    child: Icon(
-                      Icons.thumb_up_sharp,
-                      color: Colors.blue,
-                      size: 18,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Container(
-                      height: 1.0,
-                      width: MediaQuery.of(context).size.width * .4,
-                      color: MyTheme.medium_grey_50,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    AppLocalizations.of(context)!.confirmed_ucf,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: MyTheme.font_grey),
-                  ),
-                ],
-              ),
-            ),
-            indicatorStyle: IndicatorStyle(
-              color: _stepIndex >= 1 ? Colors.green : MyTheme.medium_grey,
-              padding: const EdgeInsets.only(left: 4),
-              iconStyle:
-                  _stepIndex >= 1
-                      ? IconStyle(
-                        color: Colors.white,
-                        iconData: Icons.check,
-                        fontSize: 16,
-                      )
-                      : null,
-            ),
-            beforeLineStyle:
-                _stepIndex >= 1
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-            afterLineStyle:
-                _stepIndex >= 2
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-          ),
-          TimelineTile(
-            axis: TimelineAxis.vertical,
-            alignment: TimelineAlign.end,
-            startChild: SizedBox(
-              height: 50,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width:
-                        _orderDetails!.delivery_status == "on_the_way"
-                            ? 36
-                            : 30,
-                    height:
-                        _orderDetails!.delivery_status == "on_the_way"
-                            ? 36
-                            : 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.amber, width: 2),
-
-                      //shape: BoxShape.rectangle,
-                    ),
-                    child: Icon(
-                      Icons.local_shipping_outlined,
-                      color: Colors.amber,
-                      size: 18,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Container(
-                      height: 1.0,
-                      width: MediaQuery.of(context).size.width * .4,
-                      color: MyTheme.medium_grey_50,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    AppLocalizations.of(context)!.on_the_way_ucf,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: MyTheme.font_grey),
-                  ),
-                ],
-              ),
-            ),
-            indicatorStyle: IndicatorStyle(
-              color: _stepIndex >= 2 ? Colors.green : MyTheme.medium_grey,
-              padding: const EdgeInsets.only(left: 4),
-              iconStyle:
-                  _stepIndex >= 2
-                      ? IconStyle(
-                        color: Colors.white,
-                        iconData: Icons.check,
-                        fontSize: 16,
-                      )
-                      : null,
-            ),
-            beforeLineStyle:
-                _stepIndex >= 2
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-            afterLineStyle:
-                _stepIndex >= 5
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-          ),
-          TimelineTile(
-            axis: TimelineAxis.vertical,
-            alignment: TimelineAlign.end,
-            isLast: true,
-            startChild: SizedBox(
-              height: 50,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width:
-                        _orderDetails!.delivery_status == "delivered" ? 36 : 30,
-                    height:
-                        _orderDetails!.delivery_status == "delivered" ? 36 : 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.purple, width: 2),
-
-                      //shape: BoxShape.rectangle,
-                    ),
-                    child: Icon(Icons.done_all, color: Colors.purple, size: 18),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Container(
-                      height: 1.0,
-                      width: MediaQuery.of(context).size.width * .4,
-                      color: MyTheme.medium_grey_50,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    AppLocalizations.of(context)!.delivered_ucf,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: MyTheme.font_grey),
-                  ),
-                ],
-              ),
-            ),
-            indicatorStyle: IndicatorStyle(
-              color: _stepIndex >= 5 ? Colors.green : MyTheme.medium_grey,
-              padding: const EdgeInsets.only(left: 4),
-              iconStyle:
-                  _stepIndex >= 5
-                      ? IconStyle(
-                        color: Colors.white,
-                        iconData: Icons.check,
-                        fontSize: 16,
-                      )
-                      : null,
-            ),
-            beforeLineStyle:
-                _stepIndex >= 5
-                    ? LineStyle(color: Colors.green, thickness: 5)
-                    : LineStyle(color: MyTheme.medium_grey, thickness: 4),
-          ),
+            );
+          }),
         ],
       ),
     );
   }
 
   buildOrderDetailsTopCard() {
+    Widget buildInfoTile(String label, String value, {Color? valueColor, Widget? suffix}) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: MyTheme.grey_153,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 3),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: valueColor ?? MyTheme.dark_font_grey,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (suffix != null) ...[
+                SizedBox(width: 4),
+                suffix,
+              ]
+            ],
+          ),
+        ],
+      );
+    }
+
     return Container(
-      decoration: BoxDecorations.buildBoxDecoration_1(),
+      decoration: BoxDecorations.buildBoxDecoration_1().copyWith(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Order details 2-column info grid
             Row(
               children: [
-                Text(
-                  AppLocalizations.of(context)!.order_code_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.order_code_ucf,
+                    _orderDetails!.code ?? '',
+                    valueColor: MyTheme.accent_color,
                   ),
                 ),
-                Spacer(),
-                Text(
-                  AppLocalizations.of(context)!.shipping_method_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                SizedBox(width: 12),
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.shipping_method_ucf,
+                    _orderDetails!.shipping_type_string ?? '',
                   ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  Text(
-                    _orderDetails!.code!,
-                    style: TextStyle(
-                      color: MyTheme.accent_color,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Divider(color: MyTheme.light_grey, height: 1),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.order_date_ucf,
+                    _orderDetails!.date ?? '',
                   ),
-                  Spacer(),
-                  Text(
-                    _orderDetails!.shipping_type_string!,
-                    style: TextStyle(color: MyTheme.grey_153),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.payment_method_ucf,
+                    _orderDetails!.payment_type ?? '',
                   ),
-                ],
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Divider(color: MyTheme.light_grey, height: 1),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.payment_status_ucf,
+                    _orderDetails!.payment_status_string ?? '',
+                    suffix: buildPaymentStatusCheckContainer(_orderDetails!.payment_status),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: buildInfoTile(
+                    AppLocalizations.of(context)!.delivery_status_ucf,
+                    _orderDetails!.delivery_status_string ?? '',
+                  ),
+                ),
+              ],
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Divider(color: MyTheme.light_grey, height: 1),
+            ),
+
+            // Shipping / Pickup Address section
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: MyTheme.light_grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: MyTheme.light_grey.withOpacity(0.5)),
               ),
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.order_date_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  AppLocalizations.of(context)!.payment_method_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _orderDetails!.date!,
-                    style: TextStyle(color: MyTheme.grey_153),
-                  ),
-                  Spacer(),
-                  Text(
-                    _orderDetails!.payment_type!,
-                    style: TextStyle(color: MyTheme.grey_153),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.payment_status_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  AppLocalizations.of(context)!.delivery_status_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(
-                      _orderDetails!.payment_status_string!,
-                      style: TextStyle(color: MyTheme.grey_153),
-                    ),
-                  ),
-                  buildPaymentStatusCheckContainer(
-                    _orderDetails!.payment_status,
-                  ),
-                  Spacer(),
-                  Text(
-                    _orderDetails!.delivery_status_string!,
-                    style: TextStyle(color: MyTheme.grey_153),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  _orderDetails!.shipping_address != null
-                      ? AppLocalizations.of(context)!.shipping_address_ucf
-                      : AppLocalizations.of(context)!.pickup_point_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  AppLocalizations.of(context)!.total_amount_ucf,
-                  style: TextStyle(
-                    color: MyTheme.font_grey,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  _orderDetails!.shipping_address != null
-                      ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _orderDetails!.shipping_address!.name != null
-                              ? Text(
-                                "${AppLocalizations.of(context)!.name_ucf}: ${_orderDetails!.shipping_address!.name}",
-                                maxLines: 3,
-                                style: TextStyle(color: MyTheme.grey_153),
-                              )
-                              : Container(),
-                          _orderDetails!.shipping_address!.email != null
-                              ? Text(
-                                "${AppLocalizations.of(context)!.email_ucf}: ${_orderDetails!.shipping_address!.email}",
-                                maxLines: 3,
-                                style: TextStyle(color: MyTheme.grey_153),
-                              )
-                              : Container(),
-                          Text(
-                            "${AppLocalizations.of(context)!.address_ucf}: ${_orderDetails!.shipping_address!.address}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.city_ucf}: ${_orderDetails!.shipping_address!.city}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.country_ucf}: ${_orderDetails!.shipping_address!.country}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.state_ucf}: ${_orderDetails!.shipping_address!.state}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.phone_ucf}: ${_orderDetails!.shipping_address!.phone ?? ''}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.postal_code}: ${_orderDetails!.shipping_address!.postal_code ?? ''}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                        ],
-                      )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _orderDetails!.pickupPoint!.name != null
-                              ? Text(
-                                "${AppLocalizations.of(context)!.name_ucf}: ${_orderDetails!.pickupPoint!.name}",
-                                maxLines: 3,
-                                style: TextStyle(color: MyTheme.grey_153),
-                              )
-                              : Container(),
-                          Text(
-                            "${AppLocalizations.of(context)!.address_ucf}: ${_orderDetails!.pickupPoint!.address}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                          Text(
-                            "${AppLocalizations.of(context)!.phone_ucf}: ${_orderDetails!.pickupPoint!.phone}",
-                            maxLines: 3,
-                            style: TextStyle(color: MyTheme.grey_153),
-                          ),
-                        ],
-                      ),
-                  Spacer(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  Row(
                     children: [
+                      Icon(Icons.location_on_outlined, size: 16, color: MyTheme.accent_color),
+                      SizedBox(width: 6),
                       Text(
-                        convertPrice(_orderDetails!.grand_total!),
+                        _orderDetails!.shipping_address != null
+                            ? AppLocalizations.of(context)!.shipping_address_ucf
+                            : AppLocalizations.of(context)!.pickup_point_ucf,
                         style: TextStyle(
-                          color: MyTheme.accent_color,
-                          fontSize: 16,
+                          color: MyTheme.dark_font_grey,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Btn.basic(
-                        // shape: RoundedRectangleBorder(side: Border()),
-                        minWidth: 60,
-                        // color: MyTheme.font_grey,
-                        onPressed: () {
-                          _onPressReorder(_orderDetails!.id);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: MyTheme.light_grey),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.refresh,
-                                color: MyTheme.grey_153,
-                                size: 16,
-                              ),
-                              Text(
-                                LangText(context).local.re_order_ucf,
-                                style: TextStyle(
-                                  color: MyTheme.grey_153,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Btn.basic(
-                        // shape: RoundedRectangleBorder(side: Border()),
-                        minWidth: 60,
-                        // color: MyTheme.font_grey,
-                        onPressed: () {
-                          _downloadInvoice(_orderDetails!.id);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: MyTheme.medium_grey),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.file_download_outlined,
-                                color: MyTheme.grey_153,
-                                size: 16,
-                              ),
-                              Text(
-                                LangText(context).local.invoice_ucf,
-                                style: TextStyle(
-                                  color: MyTheme.grey_153,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 8),
+                  if (_orderDetails!.shipping_address != null) ...[
+                    if (_orderDetails!.shipping_address!.name != null)
+                      Text(
+                        "${AppLocalizations.of(context)!.name_ucf}: ${_orderDetails!.shipping_address!.name}",
+                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                      ),
+                    if (_orderDetails!.shipping_address!.email != null)
+                      Text(
+                        "${AppLocalizations.of(context)!.email_ucf}: ${_orderDetails!.shipping_address!.email}",
+                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                      ),
+                    Text(
+                      "${AppLocalizations.of(context)!.address_ucf}: ${_orderDetails!.shipping_address!.address}",
+                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                    ),
+                    Text(
+                      "${AppLocalizations.of(context)!.city_ucf}: ${_orderDetails!.shipping_address!.city}, ${_orderDetails!.shipping_address!.state ?? ''}",
+                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                    ),
+                    Text(
+                      "${AppLocalizations.of(context)!.country_ucf}: ${_orderDetails!.shipping_address!.country} - ${_orderDetails!.shipping_address!.postal_code ?? ''}",
+                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                    ),
+                    if (_orderDetails!.shipping_address!.phone != null &&
+                        _orderDetails!.shipping_address!.phone!.isNotEmpty)
+                      Text(
+                        "${AppLocalizations.of(context)!.phone_ucf}: ${_orderDetails!.shipping_address!.phone}",
+                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                      ),
+                  ] else if (_orderDetails!.pickupPoint != null) ...[
+                    if (_orderDetails!.pickupPoint!.name != null)
+                      Text(
+                        "${AppLocalizations.of(context)!.name_ucf}: ${_orderDetails!.pickupPoint!.name}",
+                        style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                      ),
+                    Text(
+                      "${AppLocalizations.of(context)!.address_ucf}: ${_orderDetails!.pickupPoint!.address}",
+                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                    ),
+                    Text(
+                      "${AppLocalizations.of(context)!.phone_ucf}: ${_orderDetails!.pickupPoint!.phone}",
+                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                    ),
+                  ],
                 ],
               ),
             ),
+
+            SizedBox(height: 14),
+
+            // Total Amount & Action Buttons (Reorder, Invoice) Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.total_amount_ucf,
+                      style: TextStyle(
+                        color: MyTheme.grey_153,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      convertPrice(_orderDetails!.grand_total!),
+                      style: TextStyle(
+                        color: MyTheme.accent_color,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () => _onPressReorder(_orderDetails!.id),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: MyTheme.medium_grey_50),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.refresh_rounded, color: MyTheme.dark_font_grey, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              LangText(context).local.re_order_ucf,
+                              style: TextStyle(
+                                color: MyTheme.dark_font_grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    InkWell(
+                      onTap: () => _downloadInvoice(_orderDetails!.id),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: MyTheme.medium_grey_50),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.file_download_outlined, color: MyTheme.dark_font_grey, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              LangText(context).local.invoice_ucf,
+                              style: TextStyle(
+                                color: MyTheme.dark_font_grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            // Cancel Order & Make Payment Action Buttons
             if (_orderDetails!.delivery_status == "pending" &&
-                _orderDetails!.payment_status == "unpaid")
-              Btn.basic(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 10),
-                minWidth: DeviceInfo(context).width,
-                color: MyTheme.font_grey,
-                onPressed: () {
-                  _showCancelDialog(_orderDetails!.id);
-                },
-                child: Text(
-                  LangText(context).local.cancel_order_ucf,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                _orderDetails!.payment_status == "unpaid") ...[
+              SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 42,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: MyTheme.grey_153),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          _showCancelDialog(_orderDetails!.id);
+                        },
+                        child: Text(
+                          LangText(context).local.cancel_order_ucf,
+                          style: TextStyle(
+                            color: MyTheme.dark_font_grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: SizedBox(
+                      height: 42,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: MyTheme.accent_color,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          _make_re_payment(_orderDetails!.grand_total);
+                        },
+                        child: Text(
+                          LangText(context).local.make_payment_ucf,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            if (_orderDetails!.delivery_status == "pending" &&
-                _orderDetails!.payment_status == "unpaid")
-              Btn.basic(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 10),
-                minWidth: DeviceInfo(context).width,
-                color: MyTheme.accent_color,
-                onPressed: () {
-                  // _showCancelDialog(_orderDetails!.id);
-                  _make_re_payment(_orderDetails!.grand_total);
-                },
-                child: Text(
-                  LangText(context).local.make_payment_ucf,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
+            ],
           ],
         ),
       ),

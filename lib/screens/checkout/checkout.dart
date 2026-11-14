@@ -483,151 +483,60 @@ pay_by_wallet() async {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        contentPadding:
-            EdgeInsets.only(top: 16.0, left: 2.0, right: 2.0, bottom: 2.0),
-        content: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 16.0),
-          child: SizedBox(
-            height: 150,
-            child: Column(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: Text(
-                            AppLocalizations.of(context)!.subtotal_all_capital,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          convertPrice(_subTotalString ?? ''),
-                          style: TextStyle(
-                              color: MyTheme.font_grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    )),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: Text(
-                            AppLocalizations.of(context)!.tax_all_capital,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          convertPrice(_taxString ?? ''),
-                          style: TextStyle(
-                              color: MyTheme.font_grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    )),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: Text(
-                            AppLocalizations.of(context)!
-                                .shipping_cost_all_capital,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          convertPrice(_shippingCostString),
-                          style: TextStyle(
-                              color: MyTheme.font_grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    )),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: Text(
-                            AppLocalizations.of(context)!.discount_all_capital,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          convertPrice(_discountString ?? ''),
-                          style: TextStyle(
-                              color: MyTheme.font_grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    )),
-                Divider(),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: Text(
-                            AppLocalizations.of(context)!
-                                .grand_total_all_capital,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          convertPrice(_totalString ?? ''),
-                          style: TextStyle(
-                              color: MyTheme.accent_color,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 8.0),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDetailRow(
+                AppLocalizations.of(context)!.subtotal_all_capital,
+                convertPrice(_subTotalString ?? ''),
+              ),
+              const SizedBox(height: 10),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.tax_all_capital,
+                convertPrice(_taxString ?? ''),
+              ),
+              const SizedBox(height: 10),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.shipping_cost_all_capital,
+                convertPrice(_shippingCostString),
+              ),
+              const SizedBox(height: 10),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.discount_all_capital,
+                convertPrice(_discountString ?? ''),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Divider(thickness: 1, color: Color(0xffEEEEEE)),
+              ),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.grand_total_all_capital,
+                convertPrice(_totalString ?? ''),
+                isTotal: true,
+              ),
+            ],
           ),
         ),
+        actionsPadding: const EdgeInsets.only(bottom: 12.0, right: 16.0),
         actions: [
-          Btn.basic(
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: MyTheme.font_grey,
+              textStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             child: Text(
               AppLocalizations.of(context)!.close_all_lower,
-              style: TextStyle(color: MyTheme.medium_grey),
             ),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pop();
@@ -635,6 +544,35 @@ pay_by_wallet() async {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value, {bool isTotal = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: isTotal ? MyTheme.dark_font_grey : MyTheme.font_grey,
+              fontSize: isTotal ? 14 : 13,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            color: isTotal ? MyTheme.accent_color : MyTheme.dark_font_grey,
+            fontSize: isTotal ? 16 : 14,
+            fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 
@@ -718,101 +656,101 @@ pay_by_wallet() async {
   Row buildApplyCouponRow(BuildContext context) {
     return Row(
       children: [
-        Form(
-          key: _formKey,
-          child: SizedBox(
-            height: 42,
-            width: (MediaQuery.of(context).size.width - 32) * (2 / 3),
-            child: TextFormField(
-              controller: _couponController,
-              readOnly: _coupon_applied!,
-              autofocus: false,
-              decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.enter_coupon_code,
-                  hintStyle:
-                      TextStyle(fontSize: 14.0, color: MyTheme.textfield_grey),
-                  enabledBorder: app_language_rtl.$!
-                      ? OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: MyTheme.textfield_grey, width: 0.5),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(8.0),
-                            bottomRight: Radius.circular(8.0),
+        Expanded(
+          flex: 2,
+          child: Form(
+            key: _formKey,
+            child: SizedBox(
+              height: 42,
+              child: TextFormField(
+                controller: _couponController,
+                readOnly: _coupon_applied!,
+                autofocus: false,
+                decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.enter_coupon_code,
+                    hintStyle:
+                        TextStyle(fontSize: 14.0, color: MyTheme.textfield_grey),
+                    enabledBorder: app_language_rtl.$!
+                        ? OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: MyTheme.textfield_grey, width: 0.5),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(8.0),
+                              bottomRight: Radius.circular(8.0),
+                            ),
+                          )
+                        : OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: MyTheme.textfield_grey, width: 0.5),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              bottomLeft: Radius.circular(8.0),
+                            ),
                           ),
-                        )
-                      : OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: MyTheme.textfield_grey, width: 0.5),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(8.0),
-                            bottomLeft: Radius.circular(8.0),
-                          ),
-                        ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: MyTheme.medium_grey, width: 0.5),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(8.0),
-                      bottomLeft: Radius.circular(8.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: MyTheme.medium_grey, width: 0.5),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8.0),
+                        bottomLeft: Radius.circular(8.0),
+                      ),
                     ),
-                  ),
-                  contentPadding: EdgeInsets.only(left: 16.0)),
+                    contentPadding: EdgeInsets.only(left: 16.0, right: 16.0)),
+              ),
             ),
           ),
         ),
-        !_coupon_applied!
-            ? SizedBox(
-                width: (MediaQuery.of(context).size.width - 32) * (1 / 3),
-                height: 42,
-                child: Btn.basic(
-                  minWidth: MediaQuery.of(context).size.width,
-                  color: MyTheme.accent_color,
-                  shape: app_language_rtl.$!
-                      ? RoundedRectangleBorder(
-                          borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8.0),
-                          bottomLeft: Radius.circular(8.0),
-                        ))
-                      : RoundedRectangleBorder(
-                          borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8.0),
-                          bottomRight: Radius.circular(8.0),
-                        )),
-                  child: Text(
-                    AppLocalizations.of(context)!.apply_coupon_all_capital,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600),
+        Expanded(
+          flex: 1,
+          child: SizedBox(
+            height: 42,
+            child: !_coupon_applied!
+                ? Btn.basic(
+                    minWidth: double.infinity,
+                    color: MyTheme.accent_color,
+                    shape: app_language_rtl.$!
+                        ? RoundedRectangleBorder(
+                            borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8.0),
+                            bottomLeft: Radius.circular(8.0),
+                          ))
+                        : RoundedRectangleBorder(
+                            borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(8.0),
+                            bottomRight: Radius.circular(8.0),
+                          )),
+                    child: Text(
+                      AppLocalizations.of(context)!.apply_coupon_all_capital,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: () {
+                      onCouponApply();
+                    },
+                  )
+                : Btn.basic(
+                    minWidth: double.infinity,
+                    color: MyTheme.accent_color,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(8.0),
+                      bottomRight: Radius.circular(8.0),
+                    )),
+                    child: Text(
+                      AppLocalizations.of(context)!.remove_ucf,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: () {
+                      onCouponRemove();
+                    },
                   ),
-                  onPressed: () {
-                    onCouponApply();
-                  },
-                ),
-              )
-            : SizedBox(
-                width: (MediaQuery.of(context).size.width - 32) * (1 / 3),
-                height: 42,
-                child: Btn.basic(
-                  minWidth: MediaQuery.of(context).size.width,
-                  color: MyTheme.accent_color,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(8.0),
-                    bottomRight: Radius.circular(8.0),
-                  )),
-                  child: Text(
-                    AppLocalizations.of(context)!.remove_ucf,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  onPressed: () {
-                    onCouponRemove();
-                  },
-                ),
-              )
+          ),
+        ),
       ],
     );
   }
@@ -916,26 +854,20 @@ pay_by_wallet() async {
                                 : _paymentTypeList[index].image,
                             fit: BoxFit.fitWidth,
                           ))),
-                  SizedBox(
-                    width: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            _paymentTypeList[index].title,
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: TextStyle(
-                                color: MyTheme.font_grey,
-                                fontSize: 14,
-                                height: 1.6,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ),
-                      ],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 36.0),
+                      child: Text(
+                        _paymentTypeList[index].title,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                            color: MyTheme.dark_font_grey,
+                            fontSize: 14,
+                            height: 1.4,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 ]),
@@ -1003,53 +935,53 @@ pay_by_wallet() async {
 
   Widget grandTotalSection() {
     return Container(
-      height: 40,
+      height: 44,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         color: MyTheme.soft_accent_color,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                AppLocalizations.of(context)!.total_amount_ucf,
-                style: TextStyle(color: MyTheme.font_grey, fontSize: 14),
-              ),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.total_amount_ucf,
+            style: TextStyle(
+              color: MyTheme.dark_font_grey,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
-            Visibility(
-              visible: widget.paymentFor != PaymentFor.ManualPayment,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: InkWell(
-                  onTap: () {
-                    onPressDetails();
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.see_details_all_lower,
-                    style: TextStyle(
-                      color: MyTheme.font_grey,
-                      fontSize: 12,
-                      decoration: TextDecoration.underline,
-                    ),
+          ),
+          Visibility(
+            visible: widget.paymentFor != PaymentFor.ManualPayment,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: InkWell(
+                onTap: () {
+                  onPressDetails();
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.see_details_all_lower,
+                  style: TextStyle(
+                    color: MyTheme.accent_color,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
             ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Text(balance(),
-                  style: TextStyle(
-                      color: MyTheme.accent_color,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600)),
+          ),
+          Spacer(),
+          Text(
+            balance(),
+            style: TextStyle(
+              color: MyTheme.accent_color,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0+15] — 2026-11-14
+
+### UI & Order Details / Checkout Improvements
+- **Order Details Milestone Stepper**: Replaced fragmented timeline bars with a modern vertical milestone tracking card displaying step icons, active stage badges, and dynamic progress connectors (`lib/screens/orders/order_details.dart`).
+- **Order Details Summary Redesign**: Restructured order metadata (Order Code, Shipping Method, Date, Payment Method, Delivery Status) into a clean 2-column grid. Isolated shipping/pickup address into a dedicated card with location icon to eliminate text overlap. Redesigned Total Amount, Reorder, and Invoice buttons into an aligned action footer.
+- **Checkout Screen Improvements**: Fixed Grand Total bottom bar alignment and "see details" breakdown dialog layout to prevent text clipping and overflow. Responsive layout in apply coupon input.
+
 ## [5.4.0+14] — 2026-11-13
 
 ### Video Player & Product Details Enhancements
